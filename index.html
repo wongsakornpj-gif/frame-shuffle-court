@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+<title>Frame's Shuffle Court</title>
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Frame Shuffle" />
+<meta name="theme-color" content="#0F2318" />
+<link rel="apple-touch-icon" href="data:image/png;base64,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" />
+<link rel="icon" href="data:image/png;base64,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" />
+
+<style>
+  @font-face { font-family: 'system-fallback'; src: local('Arial'); }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; background: #0F2318; overscroll-behavior: none; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    color: #F4F1E4;
+  }
+  .display { font-family: Georgia, 'Times New Roman', serif; font-weight: 900; letter-spacing: 0.02em; }
+  ::selection { background: #FFC93C; color: #0F2318; }
+  button, input, textarea { font-family: inherit; }
+  .wrap { display: flex; justify-content: center; min-height: 100vh; }
+  .app { width: 100%; max-width: 460px; display: flex; flex-direction: column; min-height: 100vh; }
+  .header { padding: 32px 20px 16px; display: flex; align-items: center; justify-content: space-between; }
+  .header h1 { font-size: 21px; margin: 0; line-height: 1.15; }
+  .header .sub { font-size: 11px; margin-top: 4px; letter-spacing: 0.05em; text-transform: uppercase; color: #9FB6A8; }
+  .header .courts-badge { font-size: 22px; color: #FFC93C; text-align: right; }
+  .header .courts-badge small { font-size: 11px; color: #9FB6A8; }
+  .main { flex: 1; padding: 0 20px 110px; overflow-y: auto; }
+  .notice { margin-bottom: 16px; padding: 12px 16px; border-radius: 12px; font-size: 14px; background: #1C4238; color: #FFC93C; border: 1px solid #274A3E; }
+  .btn-primary { width: 100%; padding: 16px; border-radius: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; font-size: 16px; background: #FFC93C; color: #0F2318; border: none; }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-ghost { width: 100%; padding: 8px; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; background: none; color: #9FB6A8; border: 1px solid #274A3E; }
+  .card { border-radius: 16px; overflow: hidden; background: #16332A; border: 1px solid #274A3E; margin-top: 12px; }
+  .card-bonus { border: 1px dashed #FFC93C; background: #1C4238; }
+  .court-label { padding: 12px 16px 4px; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #9FB6A8; }
+  .card-bonus .court-label { color: #FFC93C; }
+  .court-team { padding: 12px 16px; text-align: center; font-weight: 600; font-size: 18px; }
+  .pair-tag { font-weight: 400; font-size: 11px; margin-top: 3px; text-transform: uppercase; letter-spacing: 0.04em; color: #9FB6A8; }
+  .pair-tag-new { color: #FFC93C; }
+  .net-line { margin: 0 16px; border-top: 1px dashed #274A3E; }
+  .bench-label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #9FB6A8; margin: 16px 0 8px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { padding: 6px 12px; border-radius: 999px; font-size: 14px; font-weight: 500; background: rgba(228,87,46,0.15); color: #E4572E; border: 1px solid rgba(228,87,46,0.3); }
+  .empty-note { font-size: 14px; text-align: center; margin-top: 24px; color: #9FB6A8; }
+  .row { display: flex; gap: 8px; }
+  .input { flex: 1; padding: 12px 16px; border-radius: 12px; font-size: 14px; background: #16332A; border: 1px solid #274A3E; color: #F4F1E4; outline: none; }
+  .icon-btn { padding: 0 16px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #FFC93C; color: #0F2318; border: none; }
+  .link-btn { font-size: 12px; text-decoration: underline; color: #9FB6A8; background: none; border: none; padding: 0; margin-top: 12px; }
+  textarea.input { width: 100%; margin-top: 8px; resize: none; }
+  .hint { font-size: 12px; color: #9FB6A8; margin-top: 6px; }
+  .roster-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; background: #16332A; border: 1px solid #274A3E; margin-top: 8px; }
+  .roster-row.inactive { opacity: 0.5; }
+  .roster-name { flex: 1; min-width: 0; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .roster-stats { font-size: 12px; color: #9FB6A8; }
+  .roster-btn { background: none; border: none; padding: 4px; display: flex; }
+  .settings-card { border-radius: 16px; padding: 16px; background: #16332A; border: 1px solid #274A3E; margin-top: 16px; }
+  .settings-card:first-child { margin-top: 0; }
+  .settings-title { font-weight: 500; font-size: 14px; margin-bottom: 4px; }
+  .settings-desc { font-size: 12px; color: #9FB6A8; margin-bottom: 12px; }
+  .stepper { display: flex; align-items: center; justify-content: space-between; }
+  .stepper button { width: 40px; height: 40px; border-radius: 999px; background: #1C4238; border: none; color: #F4F1E4; font-size: 18px; }
+  .stepper .count { font-size: 34px; color: #FFC93C; }
+  .stepper-note { font-size: 12px; text-align: center; margin-top: 8px; color: #9FB6A8; }
+  .segmented { display: flex; gap: 8px; }
+  .segmented button { flex: 1; padding: 10px; border-radius: 12px; font-size: 14px; font-weight: 500; background: #1C4238; color: #F4F1E4; border: none; }
+  .segmented button.active { background: #FFC93C; color: #0F2318; }
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; }
+  .toggle { width: 48px; height: 28px; border-radius: 999px; background: #1C4238; border: none; position: relative; }
+  .toggle.on { background: #FFC93C; }
+  .toggle .knob { position: absolute; top: 4px; left: 4px; width: 20px; height: 20px; border-radius: 999px; background: #0F2318; transition: left 0.15s; }
+  .toggle.on .knob { left: 24px; }
+  .info-box { border-radius: 16px; padding: 16px; font-size: 12px; line-height: 1.6; background: #1C4238; color: #9FB6A8; margin-top: 16px; }
+  .reset-btn { width: 100%; padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 500; background: transparent; color: #E4572E; border: 1px solid #E4572E; margin-top: 16px; }
+  .reset-btn.confirming { background: #E4572E; color: #F4F1E4; }
+  .btn-session { width: 100%; padding: 10px; border-radius: 12px; font-size: 14px; font-weight: 500; background: #1C4238; color: #F4F1E4; border: none; }
+  .btn-session.confirming { background: #FFC93C; color: #0F2318; }
+  .app-footer { text-align: center; font-size: 11px; color: #9FB6A8; margin-top: 24px; line-height: 1.6; opacity: 0.7; }
+  .history-round { border-radius: 16px; padding: 16px; background: #16332A; border: 1px solid #274A3E; margin-top: 12px; }
+  .history-round:first-child { margin-top: 0; }
+  .history-title { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #9FB6A8; margin-bottom: 8px; }
+  .history-line { font-size: 14px; margin-top: 4px; }
+  .history-dim { color: #9FB6A8; }
+  .history-rest { font-size: 12px; margin-top: 8px; color: #E4572E; }
+  .tabbar { position: fixed; bottom: 0; left: 0; right: 0; display: flex; justify-content: center; background: #0F2318; border-top: 1px solid #274A3E; }
+  .tabbar-inner { width: 100%; max-width: 460px; display: flex; padding-bottom: env(safe-area-inset-bottom, 12px); }
+  .tab-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 0; background: none; border: none; color: #9FB6A8; }
+  .tab-btn.active { color: #FFC93C; }
+  .tab-btn span { font-size: 10px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; }
+  svg { display: block; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  var APP_VERSION = '1.3.0';
+
+  // ---------- storage ----------
+  function loadState() {
+    try {
+      var raw = localStorage.getItem('shuffle-state');
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) { return null; }
+  }
+  function saveState() {
+    try {
+      localStorage.setItem('shuffle-state', JSON.stringify({
+        players: S.players, courtsCount: S.courtsCount, noComboRest: S.noComboRest,
+        oddGroupMode: S.oddGroupMode, history: S.history, roundNumber: S.roundNumber,
+        currentRound: S.currentRound, pastRounds: S.pastRounds.slice(-200)
+      }));
+    } catch (e) { console.error('save failed', e); }
+  }
+
+  function uid() { return (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now() + Math.random()); }
+  function pairKey(a, b) { return [a, b].sort().join('|'); }
+
+  // Exact minimum-total-score perfect matching via pruned backtracking (fast for small n,
+  // which covers realistic club sizes). Falls back to a greedy-edge heuristic for large groups
+  // where exhaustive search would be too slow.
+  function greedyEdgeMatching(items, scoreFn) {
+    var n = items.length;
+    var candidates = [];
+    for (var i = 0; i < n; i++) {
+      for (var j = i + 1; j < n; j++) candidates.push({ i: i, j: j, score: scoreFn(items[i], items[j]) });
+    }
+    candidates.sort(function (a, b) { return a.score - b.score; });
+    var used = new Array(n).fill(false);
+    var groups = [];
+    candidates.forEach(function (c) {
+      if (used[c.i] || used[c.j]) return;
+      used[c.i] = true; used[c.j] = true;
+      groups.push([items[c.i], items[c.j]]);
+    });
+    return groups;
+  }
+
+  function bestMatching(items, scoreFn) {
+    var n = items.length;
+    if (n <= 1) return [];
+    if (n > 12) return greedyEdgeMatching(items, scoreFn);
+
+    var bestScore = Infinity, bestGroups = null;
+    var used = new Array(n).fill(false);
+
+    function recurse(groups, totalScore) {
+      if (totalScore >= bestScore) return;
+      var firstFree = -1;
+      for (var k = 0; k < n; k++) { if (!used[k]) { firstFree = k; break; } }
+      if (firstFree === -1) { bestScore = totalScore; bestGroups = groups.slice(); return; }
+      used[firstFree] = true;
+      for (var j = firstFree + 1; j < n; j++) {
+        if (used[j]) continue;
+        used[j] = true;
+        groups.push([items[firstFree], items[j]]);
+        recurse(groups, totalScore + scoreFn(items[firstFree], items[j]));
+        groups.pop();
+        used[j] = false;
+      }
+      used[firstFree] = false;
+    }
+    recurse([], 0);
+    return bestGroups || greedyEdgeMatching(items, scoreFn);
+  }
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function cleanName(s) {
+    return String(s).normalize('NFC').replace(/[\u200B-\u200D\uFEFF\u00A0]/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+  function normalizeName(s) { return cleanName(s).toLowerCase(); }
+
+  // ---------- state ----------
+  var S = {
+    players: [], courtsCount: 2, noComboRest: false, oddGroupMode: 'bench',
+    history: { partnerCounts: {}, opponentCounts: {}, restCombos: [] },
+    roundNumber: 0, currentRound: null, pastRounds: [],
+    tab: 'play', notice: '', confirmingReset: false, confirmingNewSession: false, showBulk: false, snapshot: null,
+    exportCode: '', showImport: false, confirmingImport: false, importDraftText: ''
+  };
+
+  (function init() {
+    var d = loadState();
+    if (d) {
+      S.players = d.players || [];
+      S.courtsCount = d.courtsCount || 2;
+      S.noComboRest = !!d.noComboRest;
+      S.oddGroupMode = d.oddGroupMode || 'bench';
+      S.history = d.history || { partnerCounts: {}, opponentCounts: {}, restCombos: [] };
+      S.roundNumber = d.roundNumber || 0;
+      S.currentRound = d.currentRound || null;
+      S.pastRounds = d.pastRounds || [];
+    }
+  })();
+
+  function byId(id) { return S.players.find(function (p) { return p.id === id; }); }
+  function nameOf(id) { var p = byId(id); return p ? escapeHtml(p.name) : '—'; }
+  function nameOfPlain(id) { var p = byId(id); return p ? p.name : '—'; }
+  function activeCount() { return S.players.filter(function (p) { return p.active; }).length; }
+
+  // ---------- icons (inline svg strings) ----------
+  function icon(name, size, color) {
+    size = size || 20; color = color || 'currentColor';
+    var attrs = 'width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="' + color + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+    var paths = {
+      plus: '<path d="M12 5v14M5 12h14"/>',
+      minus: '<path d="M5 12h14"/>',
+      trash: '<path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6h16Z"/>',
+      shuffle: '<path d="m18 4 3 3-3 3M18 20l3-3-3-3M2 7h3a4 4 0 0 1 3.2 1.6l6 8A4 4 0 0 0 17.4 18H21M2 17h3a4 4 0 0 0 3.2-1.6l1-1.4M13.5 7.6l.9-1.2A4 4 0 0 1 17.6 4.6H21"/>',
+      users: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+      settings: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/>',
+      history: '<path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/>',
+      undo: '<path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/>',
+      check: '<path d="M20 6 9 17l-5-5"/>',
+      x: '<path d="M18 6 6 18M6 6l12 12"/>',
+      share: '<path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v14"/>'
+    };
+    return '<svg ' + attrs + '>' + (paths[name] || '') + '</svg>';
+  }
+
+  // ---------- actions ----------
+  function addPlayer() {
+    var input = document.getElementById('newNameInput');
+    var name = cleanName(input.value || '');
+    if (!name) return;
+    if (S.players.some(function (p) { return normalizeName(p.name) === normalizeName(name); })) {
+      S.notice = name + ' is already on the roster.';
+      render(); return;
+    }
+    S.players.push({ id: uid(), name: name, active: true, gamesPlayed: 0, gamesRested: 0, lastPlayedRound: S.roundNumber, joinRound: S.roundNumber });
+    S.notice = '';
+    saveState(); render();
+    var newInput = document.getElementById('newNameInput');
+    if (newInput) newInput.focus();
+  }
+
+  function addBulkPlayers() {
+    var textarea = document.getElementById('bulkTextArea');
+    var raw = textarea ? textarea.value : '';
+    var normalized = raw.replace(/\r\n|\r/g, '\n');
+    normalized = normalized.replace(/[ \t]*(\d{1,3}\s*[.)\-:])/g, '\n$1');
+    var lines = normalized.split('\n').map(function (l) { return l.trim(); }).filter(Boolean);
+
+    var cleaned = lines
+      .map(function (l) { return l.replace(/^[\(\[]?\d{1,3}[\)\].\-:]?\s*/, ''); })
+      .map(function (l) { return l.replace(/^[•\-\*·]\s*/, ''); })
+      .map(function (l) { return cleanName(l); })
+      .filter(Boolean);
+
+    var existingNames = new Set(S.players.map(function (p) { return normalizeName(p.name); }));
+    var seen = new Set();
+    var newPlayers = [];
+    var dupCount = 0;
+
+    cleaned.forEach(function (name) {
+      var key = normalizeName(name);
+      if (existingNames.has(key) || seen.has(key)) { dupCount++; return; }
+      seen.add(key);
+      newPlayers.push({ id: uid(), name: name, active: true, gamesPlayed: 0, gamesRested: 0, lastPlayedRound: S.roundNumber, joinRound: S.roundNumber });
+    });
+
+    S.players = S.players.concat(newPlayers);
+    S.showBulk = false;
+    var parts = ['Added ' + newPlayers.length + ' player' + (newPlayers.length === 1 ? '' : 's') + '.'];
+    if (dupCount > 0) parts.push('Skipped ' + dupCount + ' duplicate' + (dupCount === 1 ? '' : 's') + '.');
+    S.notice = parts.join(' ');
+    saveState(); render();
+  }
+
+  function removePlayer(id) { S.players = S.players.filter(function (p) { return p.id !== id; }); saveState(); render(); }
+  function toggleActive(id) {
+    S.players = S.players.map(function (p) { return p.id === id ? Object.assign({}, p, { active: !p.active }) : p; });
+    saveState(); render();
+  }
+
+  function findDuplicateGroups() {
+    var map = {};
+    S.players.forEach(function (p) {
+      var key = normalizeName(p.name);
+      (map[key] = map[key] || []).push(p);
+    });
+    return Object.keys(map).filter(function (k) { return map[k].length > 1; }).map(function (k) { return map[k]; });
+  }
+
+  function doMerge(keepId, removeId) {
+    var keep = byId(keepId), remove = byId(removeId);
+    if (!keep || !remove || keepId === removeId) return;
+
+    var merged = Object.assign({}, keep, {
+      gamesPlayed: keep.gamesPlayed + remove.gamesPlayed,
+      gamesRested: keep.gamesRested + remove.gamesRested,
+      lastPlayedRound: Math.max(keep.lastPlayedRound, remove.lastPlayedRound),
+      active: keep.active || remove.active
+    });
+    S.players = S.players.filter(function (p) { return p.id !== removeId; }).map(function (p) { return p.id === keepId ? merged : p; });
+
+    function remapCounts(counts) {
+      var result = {};
+      Object.keys(counts).forEach(function (k) {
+        var parts = k.split('|');
+        var a = parts[0] === removeId ? keepId : parts[0];
+        var b = parts[1] === removeId ? keepId : parts[1];
+        if (a === b) return;
+        var newKey = pairKey(a, b);
+        result[newKey] = (result[newKey] || 0) + counts[k];
+      });
+      return result;
+    }
+    S.history.partnerCounts = remapCounts(S.history.partnerCounts);
+    S.history.opponentCounts = remapCounts(S.history.opponentCounts);
+    S.history.restCombos = Array.from(new Set(S.history.restCombos.map(function (comboKey) {
+      var ids = comboKey.split(',').map(function (id) { return id === removeId ? keepId : id; });
+      return Array.from(new Set(ids)).sort().join(',');
+    })));
+
+    function remapIdList(list) { return list.map(function (id) { return id === removeId ? keepId : id; }); }
+    function remapRound(r) {
+      if (!r) return r;
+      return Object.assign({}, r, {
+        courts: r.courts.map(function (court) { return [remapIdList(court[0]), remapIdList(court[1])]; }),
+        bonusMatch: r.bonusMatch ? Object.assign({}, r.bonusMatch, { teamA: remapIdList(r.bonusMatch.teamA), teamB: remapIdList(r.bonusMatch.teamB) }) : null,
+        resting: remapIdList(r.resting)
+      });
+    }
+    S.currentRound = remapRound(S.currentRound);
+    S.pastRounds = S.pastRounds.map(remapRound);
+  }
+
+  function mergeDuplicateGroup(key) {
+    var groups = findDuplicateGroups();
+    var group = null;
+    for (var i = 0; i < groups.length; i++) { if (normalizeName(groups[i][0].name) === key) { group = groups[i]; break; } }
+    if (!group) return;
+    var keep = group[0];
+    for (var j = 1; j < group.length; j++) { doMerge(keep.id, group[j].id); }
+    S.notice = 'Merged ' + group.length + ' entries into "' + escapeHtml(keep.name) + '". Their play history is now combined.';
+    saveState(); render();
+  }
+
+  function generateRound() {
+    S.notice = '';
+    var active = S.players.filter(function (p) { return p.active; });
+    if (active.length < 2) { S.notice = 'Add at least 2 available players to shuffle a round.'; render(); return; }
+
+    var prevSnapshot = JSON.parse(JSON.stringify({ players: S.players, history: S.history, roundNumber: S.roundNumber, currentRound: S.currentRound, pastRounds: S.pastRounds }));
+
+    var sorted = active.slice().sort(function (a, b) {
+      var aElig = Math.max(1, S.roundNumber - (a.joinRound || 0));
+      var bElig = Math.max(1, S.roundNumber - (b.joinRound || 0));
+      var aRate = a.gamesRested / aElig, bRate = b.gamesRested / bElig;
+      if (Math.abs(aRate - bRate) > 1e-9) return bRate - aRate;
+      var aw = S.roundNumber - a.lastPlayedRound, bw = S.roundNumber - b.lastPlayedRound;
+      if (aw !== bw) return bw - aw;
+      return Math.random() - 0.5;
+    });
+
+    var slots = S.courtsCount * 4;
+    var capped = Math.min(active.length, slots);
+    var fullGroups = Math.floor(capped / 4);
+    var mainCount = fullGroups * 4;
+    var leftoverCount = capped - mainCount;
+    var bonusCourtAvailable = fullGroups < S.courtsCount;
+
+    var playing = sorted.slice(0, mainCount);
+    var bonusCandidates = (leftoverCount >= 2 && bonusCourtAvailable) ? sorted.slice(mainCount, mainCount + leftoverCount) : [];
+
+    var bonusMatch = null;
+    var bonusPlayingIds = [];
+    if (bonusCandidates.length === 2) {
+      bonusMatch = { type: 'singles', teamA: [bonusCandidates[0].id], teamB: [bonusCandidates[1].id] };
+      bonusPlayingIds = bonusCandidates.map(function (p) { return p.id; });
+    } else if (bonusCandidates.length === 3) {
+      if (S.oddGroupMode === 'uneven') {
+        var soloIdx = Math.floor(Math.random() * 3);
+        var solo = bonusCandidates[soloIdx];
+        var pair = bonusCandidates.filter(function (_, i) { return i !== soloIdx; });
+        bonusMatch = { type: 'uneven', teamA: [solo.id], teamB: pair.map(function (p) { return p.id; }) };
+        bonusPlayingIds = bonusCandidates.map(function (p) { return p.id; });
+      } else {
+        var playingTwo = bonusCandidates.slice(0, 2);
+        bonusMatch = { type: 'singles', teamA: [playingTwo[0].id], teamB: [playingTwo[1].id] };
+        bonusPlayingIds = playingTwo.map(function (p) { return p.id; });
+      }
+    }
+
+    if (playing.length === 0 && !bonusMatch) {
+      S.notice = 'Not enough available players to form a match this round.';
+      render(); return;
+    }
+
+    var playingIdsAll = new Set(playing.map(function (p) { return p.id; }).concat(bonusPlayingIds));
+    var resting = active.filter(function (p) { return !playingIdsAll.has(p.id); });
+
+    if (S.noComboRest && resting.length > 0) {
+      var key = resting.map(function (p) { return p.id; }).sort().join(',');
+      var attempts = 0;
+      while (S.history.restCombos.indexOf(key) !== -1 && attempts < 20) {
+        var rIdx = resting.findIndex(function (r) { return playing.some(function (p) { return p.gamesPlayed === r.gamesPlayed; }); });
+        if (rIdx === -1) break;
+        var r = resting[rIdx];
+        var pIdx = playing.findIndex(function (p) { return p.gamesPlayed === r.gamesPlayed; });
+        var p = playing[pIdx];
+        playing[pIdx] = r; resting[rIdx] = p;
+        key = resting.map(function (x) { return x.id; }).sort().join(',');
+        attempts++;
+      }
+    }
+
+    var pairs = bestMatching(playing, function (a, b) {
+      return (S.history.partnerCounts[pairKey(a.id, b.id)] || 0) + Math.random() * 0.01;
+    });
+
+    var courtGroups = bestMatching(pairs, function (t1, t2) {
+      var score = 0;
+      t1.forEach(function (a) { t2.forEach(function (b) { score += (S.history.opponentCounts[pairKey(a.id, b.id)] || 0); }); });
+      return score + Math.random() * 0.01;
+    });
+
+    var newPartnerCounts = Object.assign({}, S.history.partnerCounts);
+    var newOpponentCounts = Object.assign({}, S.history.opponentCounts);
+    var courtPriorCounts = [];
+    courtGroups.forEach(function (pair2) {
+      var teamA = pair2[0], teamB = pair2[1];
+      var kA = pairKey(teamA[0].id, teamA[1].id), kB = pairKey(teamB[0].id, teamB[1].id);
+      courtPriorCounts.push([newPartnerCounts[kA] || 0, newPartnerCounts[kB] || 0]);
+      newPartnerCounts[kA] = (newPartnerCounts[kA] || 0) + 1;
+      newPartnerCounts[kB] = (newPartnerCounts[kB] || 0) + 1;
+      teamA.forEach(function (a) { teamB.forEach(function (b) { var k = pairKey(a.id, b.id); newOpponentCounts[k] = (newOpponentCounts[k] || 0) + 1; }); });
+    });
+    var bonusPriorCounts = null;
+    if (bonusMatch) {
+      var teamA2 = bonusMatch.teamA, teamB2 = bonusMatch.teamB;
+      bonusPriorCounts = [
+        teamA2.length === 2 ? (newPartnerCounts[pairKey(teamA2[0], teamA2[1])] || 0) : null,
+        teamB2.length === 2 ? (newPartnerCounts[pairKey(teamB2[0], teamB2[1])] || 0) : null
+      ];
+      if (teamA2.length === 2) newPartnerCounts[pairKey(teamA2[0], teamA2[1])] = (newPartnerCounts[pairKey(teamA2[0], teamA2[1])] || 0) + 1;
+      if (teamB2.length === 2) newPartnerCounts[pairKey(teamB2[0], teamB2[1])] = (newPartnerCounts[pairKey(teamB2[0], teamB2[1])] || 0) + 1;
+      teamA2.forEach(function (a) { teamB2.forEach(function (b) { var k = pairKey(a, b); newOpponentCounts[k] = (newOpponentCounts[k] || 0) + 1; }); });
+    }
+
+    var newRestCombos = S.history.restCombos.slice();
+    if (resting.length > 0) {
+      var rkey = resting.map(function (p) { return p.id; }).sort().join(',');
+      if (newRestCombos.indexOf(rkey) === -1) newRestCombos.push(rkey);
+    }
+
+    var newRoundNumber = S.roundNumber + 1;
+    var playingIds = new Set(playing.map(function (p) { return p.id; }).concat(bonusPlayingIds));
+    var restingIds = new Set(resting.map(function (p) { return p.id; }));
+    S.players = S.players.map(function (p) {
+      if (playingIds.has(p.id)) return Object.assign({}, p, { gamesPlayed: p.gamesPlayed + 1, lastPlayedRound: newRoundNumber });
+      if (restingIds.has(p.id)) return Object.assign({}, p, { gamesRested: p.gamesRested + 1 });
+      return p;
+    });
+
+    var roundData = {
+      roundNumber: newRoundNumber,
+      courts: courtGroups.map(function (pair2) { return [pair2[0].map(function (p) { return p.id; }), pair2[1].map(function (p) { return p.id; })]; }),
+      courtPriorCounts: courtPriorCounts,
+      bonusMatch: bonusMatch,
+      bonusPriorCounts: bonusPriorCounts,
+      resting: resting.map(function (p) { return p.id; })
+    };
+
+    S.history = { partnerCounts: newPartnerCounts, opponentCounts: newOpponentCounts, restCombos: newRestCombos };
+    S.roundNumber = newRoundNumber;
+    S.currentRound = roundData;
+    S.pastRounds = S.pastRounds.concat([roundData]);
+    S.snapshot = prevSnapshot;
+    saveState(); render();
+  }
+
+  function undoRound() {
+    if (!S.snapshot) return;
+    S.players = S.snapshot.players;
+    S.history = S.snapshot.history;
+    S.roundNumber = S.snapshot.roundNumber;
+    S.currentRound = S.snapshot.currentRound;
+    S.pastRounds = S.snapshot.pastRounds;
+    S.snapshot = null;
+    saveState(); render();
+  }
+
+  function resetAll() {
+    if (!S.confirmingReset) { S.confirmingReset = true; render(); return; }
+    S.players = []; S.history = { partnerCounts: {}, opponentCounts: {}, restCombos: [] };
+    S.roundNumber = 0; S.currentRound = null; S.pastRounds = []; S.snapshot = null; S.confirmingReset = false;
+    saveState(); render();
+  }
+
+  function newSession() {
+    if (!S.confirmingNewSession) { S.confirmingNewSession = true; render(); return; }
+    S.players = S.players.map(function (p) {
+      return Object.assign({}, p, { gamesPlayed: 0, gamesRested: 0, lastPlayedRound: 0, joinRound: 0 });
+    });
+    S.history = { partnerCounts: {}, opponentCounts: {}, restCombos: [] };
+    S.roundNumber = 0; S.currentRound = null; S.pastRounds = []; S.snapshot = null; S.confirmingNewSession = false;
+    S.notice = 'New session started — everyone\'s still on the roster, just untick anyone who\'s not here today.';
+    saveState(); render();
+  }
+
+  function setTab(t) { S.tab = t; S.notice = ''; render(); }
+  function setCourts(delta) { S.courtsCount = Math.max(1, S.courtsCount + delta); saveState(); render(); }
+  function toggleNoComboRest() { S.noComboRest = !S.noComboRest; saveState(); render(); }
+  function setOddGroupMode(mode) { S.oddGroupMode = mode; saveState(); render(); }
+  function toggleBulk() { S.showBulk = !S.showBulk; render(); }
+
+  function buildBackupPayload() {
+    return JSON.stringify({
+      players: S.players, courtsCount: S.courtsCount, noComboRest: S.noComboRest,
+      oddGroupMode: S.oddGroupMode, history: S.history, roundNumber: S.roundNumber,
+      currentRound: S.currentRound, pastRounds: S.pastRounds
+    });
+  }
+
+  function copyBackupCode() {
+    var code = btoa(unescape(encodeURIComponent(buildBackupPayload())));
+    S.exportCode = code;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code).then(function () {
+        S.notice = 'Backup code copied — paste it into a message to whoever\'s running today\'s session.';
+        render();
+      }).catch(function () {
+        S.notice = 'Could not copy automatically — tap the box below to select it, then copy manually.';
+        render();
+      });
+    } else {
+      S.notice = 'Tap the box below to select the code, then copy it manually.';
+      render();
+    }
+  }
+
+  function toggleImportPanel() { S.showImport = !S.showImport; S.confirmingImport = false; S.importDraftText = ''; render(); }
+
+  function loadBackupCode() {
+    var ta = document.getElementById('importCodeArea');
+    var raw = (S.confirmingImport ? S.importDraftText : (ta && ta.value || '')).trim();
+    if (!raw) return;
+    if (!S.confirmingImport) { S.importDraftText = raw; S.confirmingImport = true; render(); return; }
+    try {
+      var payload = JSON.parse(decodeURIComponent(escape(atob(raw))));
+      if (!payload || !Array.isArray(payload.players)) throw new Error('bad shape');
+      S.players = payload.players || [];
+      S.courtsCount = payload.courtsCount || 2;
+      S.noComboRest = !!payload.noComboRest;
+      S.oddGroupMode = payload.oddGroupMode || 'bench';
+      S.history = payload.history || { partnerCounts: {}, opponentCounts: {}, restCombos: [] };
+      S.roundNumber = payload.roundNumber || 0;
+      S.currentRound = payload.currentRound || null;
+      S.pastRounds = payload.pastRounds || [];
+      S.notice = 'Loaded — this device now matches the backup code.';
+      S.showImport = false;
+      S.confirmingImport = false;
+      S.importDraftText = '';
+      saveState(); render();
+    } catch (e) {
+      S.notice = 'That backup code didn\'t load — check you copied the whole thing.';
+      S.confirmingImport = false;
+      render();
+    }
+  }
+
+  function formatRoundText(round) {
+    if (!round) return '';
+    var lines = ['🏸 Round ' + round.roundNumber];
+    round.courts.forEach(function (c, i) {
+      lines.push('Ct ' + (i + 1) + ': ' + c[0].map(nameOfPlain).join(' & ') + ' vs ' + c[1].map(nameOfPlain).join(' & '));
+    });
+    if (round.bonusMatch) {
+      lines.push('Bonus: ' + round.bonusMatch.teamA.map(nameOfPlain).join(' & ') + ' vs ' + round.bonusMatch.teamB.map(nameOfPlain).join(' & '));
+    }
+    if (round.resting.length > 0) lines.push('Rest: ' + round.resting.map(nameOfPlain).join(', '));
+    return lines.join('\n');
+  }
+
+  function fallbackCopy(text) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      var ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      S.notice = ok ? 'Copied! Paste it into your group chat.' : 'Could not copy automatically — long-press the round above to copy it manually.';
+    } catch (e) {
+      S.notice = 'Could not copy automatically — long-press the round above to copy it manually.';
+    }
+    render();
+  }
+
+  function shareRound() {
+    var text = formatRoundText(S.currentRound);
+    if (!text) return;
+    if (navigator.share) {
+      navigator.share({ text: text, title: 'Shuffle Court' }).catch(function () { /* user cancelled, ignore */ });
+    } else if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        S.notice = 'Copied! Paste it into your group chat.';
+        render();
+      }).catch(function () { fallbackCopy(text); });
+    } else {
+      fallbackCopy(text);
+    }
+  }
+
+  window.SC = {
+    addPlayer: addPlayer, addBulkPlayers: addBulkPlayers, removePlayer: removePlayer, toggleActive: toggleActive,
+    generateRound: generateRound, undoRound: undoRound, resetAll: resetAll, newSession: newSession, setTab: setTab,
+    setCourts: setCourts, toggleNoComboRest: toggleNoComboRest, setOddGroupMode: setOddGroupMode, toggleBulk: toggleBulk,
+    mergeDuplicateGroup: mergeDuplicateGroup, shareRound: shareRound,
+    copyBackupCode: copyBackupCode, toggleImportPanel: toggleImportPanel, loadBackupCode: loadBackupCode
+  };
+
+  // ---------- render ----------
+  function pairTagHtml(teamSize, priorCount) {
+    if (teamSize !== 2 || priorCount === null || priorCount === undefined) return '';
+    if (priorCount === 0) return '<div class="pair-tag pair-tag-new">First time together</div>';
+    return '<div class="pair-tag">Together ×' + (priorCount + 1) + ' now</div>';
+  }
+
+  function historyTagText(priorCount) {
+    if (priorCount === null || priorCount === undefined) return '';
+    return priorCount === 0 ? ' 🆕' : ' (×' + (priorCount + 1) + ')';
+  }
+
+  function courtCardHtml(teamA, teamB, i, priorCounts) {
+    var pc = priorCounts || [null, null];
+    return '' +
+      '<div class="card">' +
+        '<div class="court-label">Court ' + (i + 1) + '</div>' +
+        '<div class="court-team">' + teamA.map(nameOf).join(' &amp; ') + pairTagHtml(teamA.length, pc[0]) + '</div>' +
+        '<div class="net-line"></div>' +
+        '<div class="court-team">' + teamB.map(nameOf).join(' &amp; ') + pairTagHtml(teamB.length, pc[1]) + '</div>' +
+      '</div>';
+  }
+
+  function bonusCardHtml(bonus, priorCounts) {
+    if (!bonus) return '';
+    var pc = priorCounts || [null, null];
+    var label = bonus.type === 'uneven' ? '1 vs 2' : '1 vs 1';
+    return '' +
+      '<div class="card card-bonus">' +
+        '<div class="court-label">Bonus court · ' + label + '</div>' +
+        '<div class="court-team">' + bonus.teamA.map(nameOf).join(' &amp; ') + pairTagHtml(bonus.teamA.length, pc[0]) + '</div>' +
+        '<div class="net-line"></div>' +
+        '<div class="court-team">' + bonus.teamB.map(nameOf).join(' &amp; ') + pairTagHtml(bonus.teamB.length, pc[1]) + '</div>' +
+      '</div>';
+  }
+
+  function renderPlayTab() {
+    var html = '';
+    html += '<button class="btn-primary" onclick="SC.generateRound()">' + icon('shuffle', 20, '#0F2318') + (S.currentRound ? 'Shuffle Next Round' : 'Start First Round') + '</button>';
+    if (S.currentRound) {
+      html += '<button class="btn-ghost" style="margin-top:10px" onclick="SC.shareRound()">' + icon('share', 14) + ' Share this round</button>';
+    }
+    if (S.snapshot) {
+      html += '<button class="btn-ghost" style="margin-top:10px" onclick="SC.undoRound()">' + icon('undo', 14) + ' Undo last round</button>';
+    }
+    if (S.currentRound) {
+      S.currentRound.courts.forEach(function (court, i) { html += courtCardHtml(court[0], court[1], i, S.currentRound.courtPriorCounts && S.currentRound.courtPriorCounts[i]); });
+      html += bonusCardHtml(S.currentRound.bonusMatch, S.currentRound.bonusPriorCounts);
+      if (S.currentRound.resting.length > 0) {
+        html += '<div class="bench-label">On the bench</div><div class="chips">';
+        html += S.currentRound.resting.map(function (id) { return '<span class="chip">' + nameOf(id) + '</span>'; }).join('');
+        html += '</div>';
+      }
+    } else {
+      html += '<p class="empty-note">Add players and set your court count, then shuffle the first round.</p>';
+    }
+    return html;
+  }
+
+  function renderRosterTab() {
+    var html = '';
+    html += '<div class="row">' +
+      '<input id="newNameInput" class="input" placeholder="Player name" onkeydown="if(event.key===\'Enter\'){SC.addPlayer()}" />' +
+      '<button class="icon-btn" onclick="SC.addPlayer()">' + icon('plus', 20, '#0F2318') + '</button>' +
+    '</div>';
+    html += '<button class="link-btn" onclick="SC.toggleBulk()">' + (S.showBulk ? 'Hide paste list' : 'Paste a list instead') + '</button>';
+    if (S.showBulk) {
+      html += '<textarea id="bulkTextArea" class="input" rows="5" placeholder="1. name one&#10;2. name two&#10;3. name three"></textarea>';
+      html += '<div class="hint">One name per line — numbering, dots, and bullets are stripped automatically.</div>';
+      html += '<button class="btn-primary" style="margin-top:8px" onclick="SC.addBulkPlayers()">Add all names</button>';
+    }
+    if (S.players.length === 0) {
+      html += '<p class="empty-note">No players yet. Add your first one above.</p>';
+    }
+    var dupGroups = findDuplicateGroups();
+    if (dupGroups.length > 0) {
+      html += '<div class="notice" style="border-color:#E4572E">';
+      html += '<div style="margin-bottom:4px">Possible duplicate player' + (dupGroups.length > 1 ? 's' : '') + ' — same name tracked as separate people:</div>';
+      dupGroups.forEach(function (g) {
+        var key = normalizeName(g[0].name);
+        html += '<div style="display:flex;align-items:center;gap:8px;margin-top:8px">' +
+          '<span style="flex:1">' + g.map(function (p) { return escapeHtml(p.name); }).join(' + ') + '</span>' +
+          '<button class="icon-btn" style="padding:6px 12px;font-size:12px" onclick="SC.mergeDuplicateGroup(\'' + key.replace(/'/g, "\\'") + '\')">Merge</button>' +
+        '</div>';
+      });
+      html += '</div>';
+    }
+    S.players.forEach(function (p) {
+      html += '<div class="roster-row' + (p.active ? '' : ' inactive') + '">' +
+        '<div class="roster-name">' + escapeHtml(p.name) + '<div class="roster-stats">Played ' + p.gamesPlayed + ' · Rested ' + p.gamesRested + '</div></div>' +
+        '<button class="roster-btn" style="color:' + (p.active ? '#9FB6A8' : '#FFC93C') + '" onclick="SC.toggleActive(\'' + p.id + '\')">' + icon(p.active ? 'check' : 'x', 18) + '</button>' +
+        '<button class="roster-btn" style="color:#E4572E" onclick="SC.removePlayer(\'' + p.id + '\')">' + icon('trash', 18) + '</button>' +
+      '</div>';
+    });
+    return html;
+  }
+
+  function renderHistoryTab() {
+    var html = '';
+    if (S.pastRounds.length === 0) {
+      html += '<p class="empty-note">No rounds played yet — shuffle one to start building history.</p>';
+    }
+    S.pastRounds.slice().reverse().forEach(function (r) {
+      html += '<div class="history-round"><div class="history-title">Round ' + r.roundNumber + '</div>';
+      r.courts.forEach(function (court, i) {
+        var pc = (r.courtPriorCounts && r.courtPriorCounts[i]) || [null, null];
+        html += '<div class="history-line"><span class="history-dim">Ct ' + (i + 1) + ': </span>' +
+          '<strong>' + court[0].map(nameOf).join(' &amp; ') + historyTagText(pc[0]) + '</strong>' +
+          '<span class="history-dim"> vs </span>' +
+          '<strong>' + court[1].map(nameOf).join(' &amp; ') + historyTagText(pc[1]) + '</strong></div>';
+      });
+      if (r.bonusMatch) {
+        var bpc = r.bonusPriorCounts || [null, null];
+        html += '<div class="history-line"><span class="history-dim">Bonus (' + (r.bonusMatch.type === 'uneven' ? '1v2' : '1v1') + '): </span>' +
+          '<strong>' + r.bonusMatch.teamA.map(nameOf).join(' &amp; ') + historyTagText(bpc[0]) + '</strong>' +
+          '<span class="history-dim"> vs </span>' +
+          '<strong>' + r.bonusMatch.teamB.map(nameOf).join(' &amp; ') + historyTagText(bpc[1]) + '</strong></div>';
+      }
+      if (r.resting.length > 0) {
+        html += '<div class="history-rest">Rested: ' + r.resting.map(nameOf).join(', ') + '</div>';
+      }
+      html += '</div>';
+    });
+    return html;
+  }
+
+  function renderSettingsTab() {
+    var html = '';
+    html += '<div class="settings-card">' +
+      '<div class="settings-desc" style="text-transform:uppercase;letter-spacing:0.08em;font-size:11px;margin-bottom:12px">Courts available</div>' +
+      '<div class="stepper">' +
+        '<button onclick="SC.setCourts(-1)">' + icon('minus', 18) + '</button>' +
+        '<div class="count">' + S.courtsCount + '</div>' +
+        '<button onclick="SC.setCourts(1)">' + icon('plus', 18) + '</button>' +
+      '</div>' +
+      '<div class="stepper-note">' + (S.courtsCount * 4) + ' players can play at once</div>' +
+    '</div>';
+
+    html += '<div class="settings-card">' +
+      '<div class="settings-title">When 3 players are left over</div>' +
+      '<div class="settings-desc">How to use a leftover trio instead of leaving them all resting</div>' +
+      '<div class="segmented">' +
+        '<button class="' + (S.oddGroupMode === 'bench' ? 'active' : '') + '" onclick="SC.setOddGroupMode(\'bench\')">1 vs 1, rest 1</button>' +
+        '<button class="' + (S.oddGroupMode === 'uneven' ? 'active' : '') + '" onclick="SC.setOddGroupMode(\'uneven\')">1 vs 2</button>' +
+      '</div>' +
+    '</div>';
+
+    html += '<div class="settings-card toggle-row">' +
+      '<div><div class="settings-title">No repeat rest combos</div><div class="settings-desc" style="margin-bottom:0">Avoid resting the exact same group twice</div></div>' +
+      '<button class="toggle' + (S.noComboRest ? ' on' : '') + '" onclick="SC.toggleNoComboRest()"><span class="knob"></span></button>' +
+    '</div>';
+
+    html += '<div class="info-box">Every round, the players with the fewest games so far get priority to play, so play and rest stay even for everyone. Partners and opponents are chosen to avoid repeats — anyone who hasn\'t teamed up or faced off yet gets matched first.</div>';
+
+    html += '<div class="settings-card">' +
+      '<div class="settings-title">Hand off to another device</div>' +
+      '<div class="settings-desc">Someone else running today\'s session on their own phone? Copy a backup code and send it to them — they paste it in below to load your exact roster and history.</div>' +
+      '<button class="btn-primary" onclick="SC.copyBackupCode()">Copy backup code</button>' +
+      (S.exportCode ? '<textarea class="input" rows="3" readonly onclick="this.select()" style="margin-top:10px">' + escapeHtml(S.exportCode) + '</textarea>' : '') +
+      '<button class="link-btn" onclick="SC.toggleImportPanel()">' + (S.showImport ? 'Hide import' : 'Paste a backup code to load') + '</button>' +
+      (S.showImport ? (
+        '<textarea id="importCodeArea" class="input" rows="3" placeholder="Paste backup code here">' + escapeHtml(S.importDraftText || '') + '</textarea>' +
+        '<button class="reset-btn' + (S.confirmingImport ? ' confirming' : '') + '" style="margin-top:8px" onclick="SC.loadBackupCode()">' +
+        (S.confirmingImport ? 'Tap again to confirm — replaces this device\'s data' : 'Load backup code') + '</button>'
+      ) : '') +
+    '</div>';
+
+    html += '<div class="settings-card">' +
+      '<div class="settings-title">Start a new session</div>' +
+      '<div class="settings-desc">Keeps everyone\'s name on the roster, resets play/rest counts and pairing history to zero — for whoever\'s running it today.</div>' +
+      '<button class="btn-session' + (S.confirmingNewSession ? ' confirming' : '') + '" onclick="SC.newSession()">' +
+        (S.confirmingNewSession ? 'Tap again to confirm new session' : 'New session') +
+      '</button>' +
+    '</div>';
+
+    html += '<button class="reset-btn' + (S.confirmingReset ? ' confirming' : '') + '" onclick="SC.resetAll()">' + (S.confirmingReset ? 'Tap again to confirm reset' : 'Reset all players &amp; history') + '</button>';
+    html += '<div class="app-footer">Frame\'s Shuffle Court · v' + APP_VERSION + '<br/>Powered by Claude</div>';
+    return html;
+  }
+
+  function render() {
+    var tabs = [
+      { id: 'play', label: 'Play', icon: 'shuffle' },
+      { id: 'roster', label: 'Roster', icon: 'users' },
+      { id: 'history', label: 'History', icon: 'history' },
+      { id: 'settings', label: 'Settings', icon: 'settings' }
+    ];
+
+    var body;
+    if (S.tab === 'play') body = renderPlayTab();
+    else if (S.tab === 'roster') body = renderRosterTab();
+    else if (S.tab === 'history') body = renderHistoryTab();
+    else body = renderSettingsTab();
+
+    var html = '' +
+      '<div class="wrap"><div class="app">' +
+        '<div class="header">' +
+          '<div><h1 class="display">FRAME\'S SHUFFLE COURT</h1><div class="sub">' + (S.roundNumber > 0 ? ('Round ' + S.roundNumber) : 'No rounds yet') + ' · ' + activeCount() + ' available</div></div>' +
+          '<div class="courts-badge">' + S.courtsCount + '<small> ct</small></div>' +
+        '</div>' +
+        '<div class="main">' +
+          (S.notice ? '<div class="notice">' + escapeHtml(S.notice) + '</div>' : '') +
+          body +
+        '</div>' +
+        '<div class="tabbar"><div class="tabbar-inner">' +
+          tabs.map(function (t) {
+            return '<button class="tab-btn' + (S.tab === t.id ? ' active' : '') + '" onclick="SC.setTab(\'' + t.id + '\')">' + icon(t.icon, 20) + '<span>' + t.label + '</span></button>';
+          }).join('') +
+        '</div></div>' +
+      '</div></div>';
+
+    document.getElementById('root').innerHTML = html;
+
+    if (S.tab === 'roster' && S.showBulk) {
+      var ta = document.getElementById('bulkTextArea');
+      if (ta) ta.focus();
+    }
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
