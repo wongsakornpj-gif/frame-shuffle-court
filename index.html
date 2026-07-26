@@ -101,7 +101,7 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '1.3.0';
+  var APP_VERSION = '1.4.0';
 
   // ---------- storage ----------
   function loadState() {
@@ -182,7 +182,7 @@
 
   // ---------- state ----------
   var S = {
-    players: [], courtsCount: 2, noComboRest: false, oddGroupMode: 'bench',
+    players: [], courtsCount: 2, noComboRest: true, oddGroupMode: 'bench',
     history: { partnerCounts: {}, opponentCounts: {}, restCombos: [] },
     roundNumber: 0, currentRound: null, pastRounds: [],
     tab: 'play', notice: '', confirmingReset: false, confirmingNewSession: false, showBulk: false, snapshot: null,
@@ -194,7 +194,7 @@
     if (d) {
       S.players = d.players || [];
       S.courtsCount = d.courtsCount || 2;
-      S.noComboRest = !!d.noComboRest;
+      S.noComboRest = true;
       S.oddGroupMode = d.oddGroupMode || 'bench';
       S.history = d.history || { partnerCounts: {}, opponentCounts: {}, restCombos: [] };
       S.roundNumber = d.roundNumber || 0;
@@ -355,10 +355,10 @@
     var prevSnapshot = JSON.parse(JSON.stringify({ players: S.players, history: S.history, roundNumber: S.roundNumber, currentRound: S.currentRound, pastRounds: S.pastRounds }));
 
     var sorted = active.slice().sort(function (a, b) {
-      var aElig = Math.max(1, S.roundNumber - (a.joinRound || 0));
-      var bElig = Math.max(1, S.roundNumber - (b.joinRound || 0));
-      var aRate = a.gamesRested / aElig, bRate = b.gamesRested / bElig;
-      if (Math.abs(aRate - bRate) > 1e-9) return bRate - aRate;
+      var aElig = a.gamesPlayed + a.gamesRested, bElig = b.gamesPlayed + b.gamesRested;
+      var aRate = aElig <= 0 ? Infinity : a.gamesRested / aElig;
+      var bRate = bElig <= 0 ? Infinity : b.gamesRested / bElig;
+      if (aRate !== bRate) return bRate - aRate;
       var aw = S.roundNumber - a.lastPlayedRound, bw = S.roundNumber - b.lastPlayedRound;
       if (aw !== bw) return bw - aw;
       return Math.random() - 0.5;
@@ -512,7 +512,6 @@
 
   function setTab(t) { S.tab = t; S.notice = ''; render(); }
   function setCourts(delta) { S.courtsCount = Math.max(1, S.courtsCount + delta); saveState(); render(); }
-  function toggleNoComboRest() { S.noComboRest = !S.noComboRest; saveState(); render(); }
   function setOddGroupMode(mode) { S.oddGroupMode = mode; saveState(); render(); }
   function toggleBulk() { S.showBulk = !S.showBulk; render(); }
 
@@ -527,17 +526,16 @@
   function copyBackupCode() {
     var code = btoa(unescape(encodeURIComponent(buildBackupPayload())));
     S.exportCode = code;
+    S.notice = 'Code ready below — tap it to select all, then copy.';
+    render();
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(code).then(function () {
         S.notice = 'Backup code copied — paste it into a message to whoever\'s running today\'s session.';
         render();
       }).catch(function () {
-        S.notice = 'Could not copy automatically — tap the box below to select it, then copy manually.';
+        S.notice = 'Code ready below — tap it to select all, then copy manually.';
         render();
       });
-    } else {
-      S.notice = 'Tap the box below to select the code, then copy it manually.';
-      render();
     }
   }
 
@@ -545,7 +543,7 @@
 
   function loadBackupCode() {
     var ta = document.getElementById('importCodeArea');
-    var raw = (S.confirmingImport ? S.importDraftText : (ta && ta.value || '')).trim();
+    var raw = (S.confirmingImport ? S.importDraftText : (ta && ta.value || '')).replace(/\s+/g, '');
     if (!raw) return;
     if (!S.confirmingImport) { S.importDraftText = raw; S.confirmingImport = true; render(); return; }
     try {
@@ -553,19 +551,21 @@
       if (!payload || !Array.isArray(payload.players)) throw new Error('bad shape');
       S.players = payload.players || [];
       S.courtsCount = payload.courtsCount || 2;
-      S.noComboRest = !!payload.noComboRest;
+      S.noComboRest = true;
       S.oddGroupMode = payload.oddGroupMode || 'bench';
       S.history = payload.history || { partnerCounts: {}, opponentCounts: {}, restCombos: [] };
       S.roundNumber = payload.roundNumber || 0;
       S.currentRound = payload.currentRound || null;
       S.pastRounds = payload.pastRounds || [];
-      S.notice = 'Loaded — this device now matches the backup code.';
+      S.notice = 'Loaded ' + S.players.length + ' players and round ' + S.roundNumber + ' history onto this device.';
       S.showImport = false;
       S.confirmingImport = false;
       S.importDraftText = '';
+      S.exportCode = '';
+      S.tab = 'roster';
       saveState(); render();
     } catch (e) {
-      S.notice = 'That backup code didn\'t load — check you copied the whole thing.';
+      S.notice = 'That backup code didn\'t load — make sure you copied the entire code with nothing missing, then paste and try again.';
       S.confirmingImport = false;
       render();
     }
@@ -617,7 +617,7 @@
   window.SC = {
     addPlayer: addPlayer, addBulkPlayers: addBulkPlayers, removePlayer: removePlayer, toggleActive: toggleActive,
     generateRound: generateRound, undoRound: undoRound, resetAll: resetAll, newSession: newSession, setTab: setTab,
-    setCourts: setCourts, toggleNoComboRest: toggleNoComboRest, setOddGroupMode: setOddGroupMode, toggleBulk: toggleBulk,
+    setCourts: setCourts, setOddGroupMode: setOddGroupMode, toggleBulk: toggleBulk,
     mergeDuplicateGroup: mergeDuplicateGroup, shareRound: shareRound,
     copyBackupCode: copyBackupCode, toggleImportPanel: toggleImportPanel, loadBackupCode: loadBackupCode
   };
@@ -769,12 +769,7 @@
       '</div>' +
     '</div>';
 
-    html += '<div class="settings-card toggle-row">' +
-      '<div><div class="settings-title">No repeat rest combos</div><div class="settings-desc" style="margin-bottom:0">Avoid resting the exact same group twice</div></div>' +
-      '<button class="toggle' + (S.noComboRest ? ' on' : '') + '" onclick="SC.toggleNoComboRest()"><span class="knob"></span></button>' +
-    '</div>';
-
-    html += '<div class="info-box">Every round, the players with the fewest games so far get priority to play, so play and rest stay even for everyone. Partners and opponents are chosen to avoid repeats — anyone who hasn\'t teamed up or faced off yet gets matched first.</div>';
+    html += '<div class="info-box">Every round, the players with the fewest games so far get priority to play, so play and rest stay even for everyone. Partners and opponents are chosen to avoid repeats — anyone who hasn\'t teamed up or faced off yet gets matched first. The same group also won\'t be benched together twice in a row if it can be avoided.</div>';
 
     html += '<div class="settings-card">' +
       '<div class="settings-title">Hand off to another device</div>' +
