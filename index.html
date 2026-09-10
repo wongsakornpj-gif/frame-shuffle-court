@@ -101,7 +101,7 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '1.4.0';
+  var APP_VERSION = '1.5.0';
 
   // ---------- storage ----------
   function loadState() {
@@ -122,6 +122,15 @@
 
   function uid() { return (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now() + Math.random()); }
   function pairKey(a, b) { return [a, b].sort().join('|'); }
+
+  function countFreshPartners(player, pool) {
+    var count = 0;
+    pool.forEach(function (other) {
+      if (other.id === player.id) return;
+      if ((S.history.partnerCounts[pairKey(player.id, other.id)] || 0) === 0) count++;
+    });
+    return count;
+  }
 
   // Exact minimum-total-score perfect matching via pruned backtracking (fast for small n,
   // which covers realistic club sizes). Falls back to a greedy-edge heuristic for large groups
@@ -417,7 +426,13 @@
     }
 
     var pairs = bestMatching(playing, function (a, b) {
-      return (S.history.partnerCounts[pairKey(a.id, b.id)] || 0) + Math.random() * 0.01;
+      var histCount = S.history.partnerCounts[pairKey(a.id, b.id)] || 0;
+      var aFresh = countFreshPartners(a, playing), bFresh = countFreshPartners(b, playing);
+      // Prefer using "abundant" fresh pairs first, saving pairs where either player is
+      // down to very few remaining fresh options — that scarce pairing may be the only
+      // thing standing between someone and a forced repeat a round or two from now.
+      var scarcityBias = -0.01 * Math.min(aFresh, bFresh);
+      return histCount * 100 + scarcityBias + Math.random() * 0.001;
     });
 
     var courtGroups = bestMatching(pairs, function (t1, t2) {
