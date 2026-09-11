@@ -25,67 +25,74 @@
   button, input, textarea { font-family: inherit; }
   .wrap { display: flex; justify-content: center; min-height: 100vh; }
   .app { width: 100%; max-width: 460px; display: flex; flex-direction: column; min-height: 100vh; }
-  .header { padding: 32px 20px 16px; display: flex; align-items: center; justify-content: space-between; }
-  .header h1 { font-size: 21px; margin: 0; line-height: 1.15; }
-  .header .sub { font-size: 11px; margin-top: 4px; letter-spacing: 0.05em; text-transform: uppercase; color: #9FB6A8; }
-  .header .courts-badge { font-size: 22px; color: #FFC93C; text-align: right; }
-  .header .courts-badge small { font-size: 11px; color: #9FB6A8; }
-  .main { flex: 1; padding: 0 20px 110px; overflow-y: auto; }
+  .header { padding: 28px 20px 6px; }
+  .header h1 { font-size: 20px; margin: 0; line-height: 1.15; }
+  .header .sub { font-size: 11px; margin-top: 4px; letter-spacing: 0.03em; color: #9FB6A8; }
+  .main { flex: 1; padding: 12px 20px 110px; overflow-y: auto; }
   .notice { margin-bottom: 16px; padding: 12px 16px; border-radius: 12px; font-size: 14px; background: #1C4238; color: #FFC93C; border: 1px solid #274A3E; }
-  .btn-primary { width: 100%; padding: 16px; border-radius: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; font-size: 16px; background: #FFC93C; color: #0F2318; border: none; }
+  .btn-primary { width: 100%; padding: 14px; border-radius: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; font-size: 15px; background: #FFC93C; color: #0F2318; border: none; }
   .btn-primary:active { transform: scale(0.98); }
-  .btn-ghost { width: 100%; padding: 8px; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; background: none; color: #9FB6A8; border: 1px solid #274A3E; }
-  .card { border-radius: 16px; overflow: hidden; background: #16332A; border: 1px solid #274A3E; margin-top: 12px; }
+  .btn-ghost { padding: 12px; border-radius: 14px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px; font-weight: 500; background: none; color: #9FB6A8; border: 1px solid #274A3E; }
+  .row-half { display: flex; gap: 8px; margin-top: 10px; }
+  .row-half > * { flex: 1; }
+  .panel { border-radius: 16px; padding: 14px; background: #16332A; border: 1px solid #274A3E; margin-top: 10px; }
+  .panel:first-child { margin-top: 0; }
+  .panel-title { font-weight: 500; font-size: 14px; margin-bottom: 2px; }
+  .panel-desc { font-size: 12px; color: #9FB6A8; margin-bottom: 10px; }
+  .setup-pair { display: flex; gap: 10px; }
+  .setup-card { flex: 1; background: #16332A; border: 1px solid #274A3E; border-radius: 14px; padding: 12px; display: flex; flex-direction: column; }
+  .setup-label { color: #9FB6A8; font-size: 10px; text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 10px; }
+  .courts-toggle { position: relative; flex: 1; display: flex; background: #1C4238; border-radius: 10px; padding: 3px; align-items: center; }
+  .courts-toggle-thumb { position: absolute; top: 3px; bottom: 3px; left: 3px; width: calc(50% - 3px); background: #FFC93C; border-radius: 7px; transition: transform 0.18s ease; }
+  .courts-toggle-thumb.pos2 { transform: translateX(100%); }
+  .courts-toggle-opt { flex: 1; position: relative; z-index: 1; text-align: center; padding: 8px 0; font-size: 14px; font-weight: 600; color: #9FB6A8; background: none; border: none; transition: color 0.18s ease; }
+  .courts-toggle-opt.active-text { color: #0F2318; }
+  .mode-toggle { position: relative; flex: 1; display: flex; background: #1C4238; border-radius: 10px; padding: 3px; }
+  .mode-toggle-thumb { position: absolute; top: 3px; bottom: 3px; left: 3px; width: calc(50% - 3px); background: #FFC93C; border-radius: 7px; transition: transform 0.18s ease; }
+  .mode-toggle-thumb.pos2 { transform: translateX(100%); }
+  .mode-toggle-opt { flex: 1; position: relative; z-index: 1; text-align: center; padding: 8px 2px; font-size: 11px; font-weight: 600; color: #9FB6A8; background: none; border: none; line-height: 1.25; transition: color 0.18s ease; }
+  .mode-toggle-opt.active-text { color: #0F2318; }
+  .card { border-radius: 16px; overflow: hidden; background: #16332A; border: 1px solid #274A3E; margin-top: 10px; }
   .card-bonus { border: 1px dashed #FFC93C; background: #1C4238; }
-  .court-label { padding: 12px 16px 4px; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #9FB6A8; }
+  .court-label { padding: 10px 14px 2px; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #9FB6A8; }
   .card-bonus .court-label { color: #FFC93C; }
-  .court-team { padding: 12px 16px; text-align: center; font-weight: 600; font-size: 18px; }
-  .pair-tag { font-weight: 400; font-size: 11px; margin-top: 3px; text-transform: uppercase; letter-spacing: 0.04em; color: #9FB6A8; }
-  .pair-tag-new { color: #FFC93C; }
-  .net-line { margin: 0 16px; border-top: 1px dashed #274A3E; }
-  .bench-label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #9FB6A8; margin: 16px 0 8px; }
-  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-  .chip { padding: 6px 12px; border-radius: 999px; font-size: 14px; font-weight: 500; background: rgba(228,87,46,0.15); color: #E4572E; border: 1px solid rgba(228,87,46,0.3); }
+  .court-line { padding: 6px 14px 12px; text-align: center; font-weight: 500; font-size: 15px; line-height: 1.5; }
+  .vs { color: #FFC93C; font-weight: 700; }
+  .new-badge { font-size: 12px; }
+  .repeat-badge { background: #1C4238; color: #9FB6A8; font-size: 10px; font-weight: 600; padding: 2px 5px; border-radius: 6px; }
+  .card-bonus .repeat-badge { background: #0F2318; }
+  .resting-line { font-size: 12px; color: #E4572E; margin: 10px 0; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { padding: 5px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; background: #1C4238; color: #F4F1E4; border: none; }
+  .chip.inactive { color: #9FB6A8; opacity: 0.5; }
   .empty-note { font-size: 14px; text-align: center; margin-top: 24px; color: #9FB6A8; }
-  .row { display: flex; gap: 8px; }
-  .input { flex: 1; padding: 12px 16px; border-radius: 12px; font-size: 14px; background: #16332A; border: 1px solid #274A3E; color: #F4F1E4; outline: none; }
-  .icon-btn { padding: 0 16px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #FFC93C; color: #0F2318; border: none; }
-  .link-btn { font-size: 12px; text-decoration: underline; color: #9FB6A8; background: none; border: none; padding: 0; margin-top: 12px; }
-  textarea.input { width: 100%; margin-top: 8px; resize: none; }
-  .hint { font-size: 12px; color: #9FB6A8; margin-top: 6px; }
-  .roster-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; background: #16332A; border: 1px solid #274A3E; margin-top: 8px; }
+  .input { width: 100%; padding: 12px 16px; border-radius: 12px; font-size: 14px; background: #0F2318; border: 1px solid #274A3E; color: #F4F1E4; outline: none; resize: none; }
+  .input::placeholder { color: #6E8579; }
+  .add-row { display: flex; gap: 8px; align-items: flex-end; }
+  .add-row .input { flex: 1; }
+  .icon-btn { padding: 0 16px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #FFC93C; color: #0F2318; border: none; align-self: stretch; }
+  .link-btn { font-size: 12px; text-decoration: underline; color: #9FB6A8; background: none; border: none; padding: 0; margin-top: 10px; }
+  .hint { font-size: 11px; color: #9FB6A8; margin-top: 6px; }
+  .roster-row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px; background: #16332A; border: 1px solid #274A3E; margin-top: 8px; }
   .roster-row.inactive { opacity: 0.5; }
   .roster-name { flex: 1; min-width: 0; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .roster-stats { font-size: 12px; color: #9FB6A8; }
   .roster-btn { background: none; border: none; padding: 4px; display: flex; }
-  .settings-card { border-radius: 16px; padding: 16px; background: #16332A; border: 1px solid #274A3E; margin-top: 16px; }
-  .settings-card:first-child { margin-top: 0; }
-  .settings-title { font-weight: 500; font-size: 14px; margin-bottom: 4px; }
-  .settings-desc { font-size: 12px; color: #9FB6A8; margin-bottom: 12px; }
-  .stepper { display: flex; align-items: center; justify-content: space-between; }
-  .stepper button { width: 40px; height: 40px; border-radius: 999px; background: #1C4238; border: none; color: #F4F1E4; font-size: 18px; }
-  .stepper .count { font-size: 34px; color: #FFC93C; }
-  .stepper-note { font-size: 12px; text-align: center; margin-top: 8px; color: #9FB6A8; }
-  .segmented { display: flex; gap: 8px; }
-  .segmented button { flex: 1; padding: 10px; border-radius: 12px; font-size: 14px; font-weight: 500; background: #1C4238; color: #F4F1E4; border: none; }
-  .segmented button.active { background: #FFC93C; color: #0F2318; }
-  .toggle-row { display: flex; align-items: center; justify-content: space-between; }
-  .toggle { width: 48px; height: 28px; border-radius: 999px; background: #1C4238; border: none; position: relative; }
-  .toggle.on { background: #FFC93C; }
-  .toggle .knob { position: absolute; top: 4px; left: 4px; width: 20px; height: 20px; border-radius: 999px; background: #0F2318; transition: left 0.15s; }
-  .toggle.on .knob { left: 24px; }
-  .info-box { border-radius: 16px; padding: 16px; font-size: 12px; line-height: 1.6; background: #1C4238; color: #9FB6A8; margin-top: 16px; }
-  .reset-btn { width: 100%; padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 500; background: transparent; color: #E4572E; border: 1px solid #E4572E; margin-top: 16px; }
+  .reset-btn { width: 100%; padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 500; background: transparent; color: #E4572E; border: 1px solid #E4572E; margin-top: 10px; }
   .reset-btn.confirming { background: #E4572E; color: #F4F1E4; }
   .btn-session { width: 100%; padding: 10px; border-radius: 12px; font-size: 14px; font-weight: 500; background: #1C4238; color: #F4F1E4; border: none; }
   .btn-session.confirming { background: #FFC93C; color: #0F2318; }
-  .app-footer { text-align: center; font-size: 11px; color: #9FB6A8; margin-top: 24px; line-height: 1.6; opacity: 0.7; }
-  .history-round { border-radius: 16px; padding: 16px; background: #16332A; border: 1px solid #274A3E; margin-top: 12px; }
+  .app-footer { text-align: center; font-size: 11px; color: #9FB6A8; margin-top: 20px; line-height: 1.6; opacity: 0.7; }
+  .history-round { border-radius: 16px; padding: 14px; background: #16332A; border: 1px solid #274A3E; margin-top: 10px; }
+  .round-divider { border-top: 1px dashed #274A3E; margin: 20px 0 4px; }
   .history-round:first-child { margin-top: 0; }
-  .history-title { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #9FB6A8; margin-bottom: 8px; }
+  .history-top { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px; }
+  .history-title { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #9FB6A8; }
   .history-line { font-size: 14px; margin-top: 4px; }
   .history-dim { color: #9FB6A8; }
-  .history-rest { font-size: 12px; margin-top: 8px; color: #E4572E; }
+  .history-rest { font-size: 12px; margin-bottom: 8px; color: #E4572E; }
+  .history-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .btn-small { background: #1C4238; color: #F4F1E4; font-size: 12px; font-weight: 500; padding: 8px 12px; border-radius: 10px; border: none; display: flex; align-items: center; gap: 5px; }
   .tabbar { position: fixed; bottom: 0; left: 0; right: 0; display: flex; justify-content: center; background: #0F2318; border-top: 1px solid #274A3E; }
   .tabbar-inner { width: 100%; max-width: 460px; display: flex; padding-bottom: env(safe-area-inset-bottom, 12px); }
   .tab-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 0; background: none; border: none; color: #9FB6A8; }
@@ -101,7 +108,8 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '1.5.0';
+  var APP_VERSION = '2.1.0';
+  var MAX_UNDO = 20;
 
   // ---------- storage ----------
   function loadState() {
@@ -115,7 +123,8 @@
       localStorage.setItem('shuffle-state', JSON.stringify({
         players: S.players, courtsCount: S.courtsCount, noComboRest: S.noComboRest,
         oddGroupMode: S.oddGroupMode, history: S.history, roundNumber: S.roundNumber,
-        currentRound: S.currentRound, pastRounds: S.pastRounds.slice(-200)
+        currentRound: S.currentRound, pastRounds: S.pastRounds.slice(-200),
+        undoStack: S.undoStack.slice(-MAX_UNDO)
       }));
     } catch (e) { console.error('save failed', e); }
   }
@@ -191,10 +200,10 @@
 
   // ---------- state ----------
   var S = {
-    players: [], courtsCount: 2, noComboRest: true, oddGroupMode: 'bench',
+    players: [], courtsCount: 1, noComboRest: true, oddGroupMode: 'bench',
     history: { partnerCounts: {}, opponentCounts: {}, restCombos: [] },
-    roundNumber: 0, currentRound: null, pastRounds: [],
-    tab: 'play', notice: '', confirmingReset: false, confirmingNewSession: false, showBulk: false, snapshot: null,
+    roundNumber: 0, currentRound: null, pastRounds: [], undoStack: [],
+    tab: 'play', notice: '', confirmingReset: false, confirmingNewSession: false,
     exportCode: '', showImport: false, confirmingImport: false, importDraftText: ''
   };
 
@@ -202,13 +211,14 @@
     var d = loadState();
     if (d) {
       S.players = d.players || [];
-      S.courtsCount = d.courtsCount || 2;
+      S.courtsCount = d.courtsCount || 1;
       S.noComboRest = true;
       S.oddGroupMode = d.oddGroupMode || 'bench';
       S.history = d.history || { partnerCounts: {}, opponentCounts: {}, restCombos: [] };
       S.roundNumber = d.roundNumber || 0;
       S.currentRound = d.currentRound || null;
       S.pastRounds = d.pastRounds || [];
+      S.undoStack = d.undoStack || [];
     }
   })();
 
@@ -225,37 +235,21 @@
       plus: '<path d="M12 5v14M5 12h14"/>',
       minus: '<path d="M5 12h14"/>',
       trash: '<path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6h16Z"/>',
-      shuffle: '<path d="m18 4 3 3-3 3M18 20l3-3-3-3M2 7h3a4 4 0 0 1 3.2 1.6l6 8A4 4 0 0 0 17.4 18H21M2 17h3a4 4 0 0 0 3.2-1.6l1-1.4M13.5 7.6l.9-1.2A4 4 0 0 1 17.6 4.6H21"/>',
       users: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
-      settings: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/>',
       history: '<path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/>',
-      undo: '<path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/>',
       check: '<path d="M20 6 9 17l-5-5"/>',
       x: '<path d="M18 6 6 18M6 6l12 12"/>',
-      share: '<path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v14"/>'
+      shuffle_tab: '<path d="m18 4 3 3-3 3M18 20l3-3-3-3M2 7h3a4 4 0 0 1 3.2 1.6l6 8A4 4 0 0 0 17.4 18H21M2 17h3a4 4 0 0 0 3.2-1.6l1-1.4M13.5 7.6l.9-1.2A4 4 0 0 1 17.6 4.6H21"/>'
     };
     return '<svg ' + attrs + '>' + (paths[name] || '') + '</svg>';
   }
 
   // ---------- actions ----------
-  function addPlayer() {
-    var input = document.getElementById('newNameInput');
-    var name = cleanName(input.value || '');
-    if (!name) return;
-    if (S.players.some(function (p) { return normalizeName(p.name) === normalizeName(name); })) {
-      S.notice = name + ' is already on the roster.';
-      render(); return;
-    }
-    S.players.push({ id: uid(), name: name, active: true, gamesPlayed: 0, gamesRested: 0, lastPlayedRound: S.roundNumber, joinRound: S.roundNumber });
-    S.notice = '';
-    saveState(); render();
-    var newInput = document.getElementById('newNameInput');
-    if (newInput) newInput.focus();
-  }
+  function addFromInput() {
+    var ta = document.getElementById('playerInput');
+    var raw = ta ? ta.value : '';
+    if (!raw.trim()) return;
 
-  function addBulkPlayers() {
-    var textarea = document.getElementById('bulkTextArea');
-    var raw = textarea ? textarea.value : '';
     var normalized = raw.replace(/\r\n|\r/g, '\n');
     normalized = normalized.replace(/[ \t]*(\d{1,3}\s*[.)\-:])/g, '\n$1');
     var lines = normalized.split('\n').map(function (l) { return l.trim(); }).filter(Boolean);
@@ -263,7 +257,7 @@
     var cleaned = lines
       .map(function (l) { return l.replace(/^[\(\[]?\d{1,3}[\)\].\-:]?\s*/, ''); })
       .map(function (l) { return l.replace(/^[•\-\*·]\s*/, ''); })
-      .map(function (l) { return cleanName(l); })
+      .map(cleanName)
       .filter(Boolean);
 
     var existingNames = new Set(S.players.map(function (p) { return normalizeName(p.name); }));
@@ -275,15 +269,17 @@
       var key = normalizeName(name);
       if (existingNames.has(key) || seen.has(key)) { dupCount++; return; }
       seen.add(key);
-      newPlayers.push({ id: uid(), name: name, active: true, gamesPlayed: 0, gamesRested: 0, lastPlayedRound: S.roundNumber, joinRound: S.roundNumber });
+      newPlayers.push({ id: uid(), name: name, active: true, gamesPlayed: 0, gamesRested: 0, streak: 0, lastPlayedRound: S.roundNumber, joinRound: S.roundNumber });
     });
 
     S.players = S.players.concat(newPlayers);
-    S.showBulk = false;
-    var parts = ['Added ' + newPlayers.length + ' player' + (newPlayers.length === 1 ? '' : 's') + '.'];
-    if (dupCount > 0) parts.push('Skipped ' + dupCount + ' duplicate' + (dupCount === 1 ? '' : 's') + '.');
-    S.notice = parts.join(' ');
+    var parts = [];
+    if (newPlayers.length > 0) parts.push('Added ' + newPlayers.length + ' player' + (newPlayers.length === 1 ? '' : 's') + '.');
+    if (dupCount > 0) parts.push((dupCount === 1 ? '1 name' : dupCount + ' names') + ' already on the roster.');
+    S.notice = parts.length ? parts.join(' ') : 'No new names found.';
     saveState(); render();
+    var freshInput = document.getElementById('playerInput');
+    if (freshInput) freshInput.focus();
   }
 
   function removePlayer(id) { S.players = S.players.filter(function (p) { return p.id !== id; }); saveState(); render(); }
@@ -308,6 +304,7 @@
     var merged = Object.assign({}, keep, {
       gamesPlayed: keep.gamesPlayed + remove.gamesPlayed,
       gamesRested: keep.gamesRested + remove.gamesRested,
+      streak: Math.max(keep.streak || 0, remove.streak || 0),
       lastPlayedRound: Math.max(keep.lastPlayedRound, remove.lastPlayedRound),
       active: keep.active || remove.active
     });
@@ -343,6 +340,12 @@
     }
     S.currentRound = remapRound(S.currentRound);
     S.pastRounds = S.pastRounds.map(remapRound);
+    S.undoStack = S.undoStack.map(function (snap) {
+      return Object.assign({}, snap, {
+        players: snap.players.map(function (p) { return p.id === removeId ? null : p; }).filter(Boolean),
+        currentRound: remapRound(snap.currentRound)
+      });
+    });
   }
 
   function mergeDuplicateGroup(key) {
@@ -361,9 +364,11 @@
     var active = S.players.filter(function (p) { return p.active; });
     if (active.length < 2) { S.notice = 'Add at least 2 available players to shuffle a round.'; render(); return; }
 
-    var prevSnapshot = JSON.parse(JSON.stringify({ players: S.players, history: S.history, roundNumber: S.roundNumber, currentRound: S.currentRound, pastRounds: S.pastRounds }));
+    var prevSnapshot = JSON.parse(JSON.stringify({ players: S.players, history: S.history, roundNumber: S.roundNumber, currentRound: S.currentRound }));
 
     var sorted = active.slice().sort(function (a, b) {
+      var aStreak = a.streak || 0, bStreak = b.streak || 0;
+      if (aStreak !== bStreak) return aStreak - bStreak; // shorter current streak plays first
       var aElig = a.gamesPlayed + a.gamesRested, bElig = b.gamesPlayed + b.gamesRested;
       var aRate = aElig <= 0 ? Infinity : a.gamesRested / aElig;
       var bRate = bElig <= 0 ? Infinity : b.gamesRested / bElig;
@@ -474,8 +479,8 @@
     var playingIds = new Set(playing.map(function (p) { return p.id; }).concat(bonusPlayingIds));
     var restingIds = new Set(resting.map(function (p) { return p.id; }));
     S.players = S.players.map(function (p) {
-      if (playingIds.has(p.id)) return Object.assign({}, p, { gamesPlayed: p.gamesPlayed + 1, lastPlayedRound: newRoundNumber });
-      if (restingIds.has(p.id)) return Object.assign({}, p, { gamesRested: p.gamesRested + 1 });
+      if (playingIds.has(p.id)) return Object.assign({}, p, { gamesPlayed: p.gamesPlayed + 1, lastPlayedRound: newRoundNumber, streak: (p.streak || 0) + 1 });
+      if (restingIds.has(p.id)) return Object.assign({}, p, { gamesRested: p.gamesRested + 1, streak: 0 });
       return p;
     });
 
@@ -492,43 +497,43 @@
     S.roundNumber = newRoundNumber;
     S.currentRound = roundData;
     S.pastRounds = S.pastRounds.concat([roundData]);
-    S.snapshot = prevSnapshot;
+    S.undoStack.push(prevSnapshot);
+    if (S.undoStack.length > MAX_UNDO) S.undoStack.shift();
     saveState(); render();
   }
 
   function undoRound() {
-    if (!S.snapshot) return;
-    S.players = S.snapshot.players;
-    S.history = S.snapshot.history;
-    S.roundNumber = S.snapshot.roundNumber;
-    S.currentRound = S.snapshot.currentRound;
-    S.pastRounds = S.snapshot.pastRounds;
-    S.snapshot = null;
+    if (S.undoStack.length === 0) return;
+    var snap = S.undoStack.pop();
+    S.players = snap.players;
+    S.history = snap.history;
+    S.roundNumber = snap.roundNumber;
+    S.currentRound = snap.currentRound;
+    S.pastRounds = S.pastRounds.slice(0, -1);
     saveState(); render();
   }
 
   function resetAll() {
     if (!S.confirmingReset) { S.confirmingReset = true; render(); return; }
     S.players = []; S.history = { partnerCounts: {}, opponentCounts: {}, restCombos: [] };
-    S.roundNumber = 0; S.currentRound = null; S.pastRounds = []; S.snapshot = null; S.confirmingReset = false;
+    S.roundNumber = 0; S.currentRound = null; S.pastRounds = []; S.undoStack = []; S.confirmingReset = false;
     saveState(); render();
   }
 
   function newSession() {
     if (!S.confirmingNewSession) { S.confirmingNewSession = true; render(); return; }
     S.players = S.players.map(function (p) {
-      return Object.assign({}, p, { gamesPlayed: 0, gamesRested: 0, lastPlayedRound: 0, joinRound: 0 });
+      return Object.assign({}, p, { gamesPlayed: 0, gamesRested: 0, streak: 0, lastPlayedRound: 0, joinRound: 0 });
     });
     S.history = { partnerCounts: {}, opponentCounts: {}, restCombos: [] };
-    S.roundNumber = 0; S.currentRound = null; S.pastRounds = []; S.snapshot = null; S.confirmingNewSession = false;
+    S.roundNumber = 0; S.currentRound = null; S.pastRounds = []; S.undoStack = []; S.confirmingNewSession = false;
     S.notice = 'New session started — everyone\'s still on the roster, just untick anyone who\'s not here today.';
     saveState(); render();
   }
 
   function setTab(t) { S.tab = t; S.notice = ''; render(); }
-  function setCourts(delta) { S.courtsCount = Math.max(1, S.courtsCount + delta); saveState(); render(); }
+  function setCourtsValue(n) { S.courtsCount = n; saveState(); render(); }
   function setOddGroupMode(mode) { S.oddGroupMode = mode; saveState(); render(); }
-  function toggleBulk() { S.showBulk = !S.showBulk; render(); }
 
   function buildBackupPayload() {
     return JSON.stringify({
@@ -565,13 +570,14 @@
       var payload = JSON.parse(decodeURIComponent(escape(atob(raw))));
       if (!payload || !Array.isArray(payload.players)) throw new Error('bad shape');
       S.players = payload.players || [];
-      S.courtsCount = payload.courtsCount || 2;
+      S.courtsCount = payload.courtsCount || 1;
       S.noComboRest = true;
       S.oddGroupMode = payload.oddGroupMode || 'bench';
       S.history = payload.history || { partnerCounts: {}, opponentCounts: {}, restCombos: [] };
       S.roundNumber = payload.roundNumber || 0;
       S.currentRound = payload.currentRound || null;
       S.pastRounds = payload.pastRounds || [];
+      S.undoStack = [];
       S.notice = 'Loaded ' + S.players.length + ' players and round ' + S.roundNumber + ' history onto this device.';
       S.showImport = false;
       S.confirmingImport = false;
@@ -590,12 +596,22 @@
     if (!round) return '';
     var lines = ['🏸 Round ' + round.roundNumber];
     round.courts.forEach(function (c, i) {
-      lines.push('Ct ' + (i + 1) + ': ' + c[0].map(nameOfPlain).join(' & ') + ' vs ' + c[1].map(nameOfPlain).join(' & '));
+      lines.push('Ct ' + (i + 1) + ': ' + c[0].map(nameOfPlain).join(' & ') + ' VS ' + c[1].map(nameOfPlain).join(' & '));
     });
     if (round.bonusMatch) {
-      lines.push('Bonus: ' + round.bonusMatch.teamA.map(nameOfPlain).join(' & ') + ' vs ' + round.bonusMatch.teamB.map(nameOfPlain).join(' & '));
+      lines.push('Bonus: ' + round.bonusMatch.teamA.map(nameOfPlain).join(' & ') + ' VS ' + round.bonusMatch.teamB.map(nameOfPlain).join(' & '));
     }
-    if (round.resting.length > 0) lines.push('Rest: ' + round.resting.map(nameOfPlain).join(', '));
+    if (round.resting.length > 0) lines.push('😴 Rest: ' + round.resting.map(nameOfPlain).join(', '));
+    return lines.join('\n');
+  }
+
+  function formatAllHistoryText() {
+    if (S.pastRounds.length === 0) return '';
+    var lines = ['🏸 Frame\'s Shuffle Court — full session'];
+    S.pastRounds.forEach(function (r) {
+      lines.push('');
+      lines.push(formatRoundText(r));
+    });
     return lines.join('\n');
   }
 
@@ -614,11 +630,10 @@
     render();
   }
 
-  function shareRound() {
-    var text = formatRoundText(S.currentRound);
+  function shareText(text, title) {
     if (!text) return;
     if (navigator.share) {
-      navigator.share({ text: text, title: 'Shuffle Court' }).catch(function () { /* user cancelled, ignore */ });
+      navigator.share({ text: text, title: title }).catch(function () { /* user cancelled, ignore */ });
     } else if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(function () {
         S.notice = 'Copied! Paste it into your group chat.';
@@ -629,24 +644,21 @@
     }
   }
 
+  function shareAllHistory() { shareText(formatAllHistoryText(), 'Shuffle Court — full session'); }
+
   window.SC = {
-    addPlayer: addPlayer, addBulkPlayers: addBulkPlayers, removePlayer: removePlayer, toggleActive: toggleActive,
+    addFromInput: addFromInput, removePlayer: removePlayer, toggleActive: toggleActive,
     generateRound: generateRound, undoRound: undoRound, resetAll: resetAll, newSession: newSession, setTab: setTab,
-    setCourts: setCourts, setOddGroupMode: setOddGroupMode, toggleBulk: toggleBulk,
-    mergeDuplicateGroup: mergeDuplicateGroup, shareRound: shareRound,
+    setCourtsValue: setCourtsValue, setOddGroupMode: setOddGroupMode,
+    mergeDuplicateGroup: mergeDuplicateGroup, shareAllHistory: shareAllHistory,
     copyBackupCode: copyBackupCode, toggleImportPanel: toggleImportPanel, loadBackupCode: loadBackupCode
   };
 
   // ---------- render ----------
-  function pairTagHtml(teamSize, priorCount) {
+  function pairTagInline(teamSize, priorCount) {
     if (teamSize !== 2 || priorCount === null || priorCount === undefined) return '';
-    if (priorCount === 0) return '<div class="pair-tag pair-tag-new">First time together</div>';
-    return '<div class="pair-tag">Together ×' + (priorCount + 1) + ' now</div>';
-  }
-
-  function historyTagText(priorCount) {
-    if (priorCount === null || priorCount === undefined) return '';
-    return priorCount === 0 ? ' 🆕' : ' (×' + (priorCount + 1) + ')';
+    if (priorCount === 0) return ' <span class="new-badge" title="First time together">🆕</span>';
+    return ' <span class="repeat-badge">×' + (priorCount + 1) + '</span>';
   }
 
   function courtCardHtml(teamA, teamB, i, priorCounts) {
@@ -654,9 +666,10 @@
     return '' +
       '<div class="card">' +
         '<div class="court-label">Court ' + (i + 1) + '</div>' +
-        '<div class="court-team">' + teamA.map(nameOf).join(' &amp; ') + pairTagHtml(teamA.length, pc[0]) + '</div>' +
-        '<div class="net-line"></div>' +
-        '<div class="court-team">' + teamB.map(nameOf).join(' &amp; ') + pairTagHtml(teamB.length, pc[1]) + '</div>' +
+        '<div class="court-line">' + teamA.map(nameOf).join(' &amp; ') + pairTagInline(teamA.length, pc[0]) +
+          ' <span class="vs">VS</span> ' +
+          teamB.map(nameOf).join(' &amp; ') + pairTagInline(teamB.length, pc[1]) +
+        '</div>' +
       '</div>';
   }
 
@@ -667,50 +680,92 @@
     return '' +
       '<div class="card card-bonus">' +
         '<div class="court-label">Bonus court · ' + label + '</div>' +
-        '<div class="court-team">' + bonus.teamA.map(nameOf).join(' &amp; ') + pairTagHtml(bonus.teamA.length, pc[0]) + '</div>' +
-        '<div class="net-line"></div>' +
-        '<div class="court-team">' + bonus.teamB.map(nameOf).join(' &amp; ') + pairTagHtml(bonus.teamB.length, pc[1]) + '</div>' +
+        '<div class="court-line">' + bonus.teamA.map(nameOf).join(' &amp; ') + pairTagInline(bonus.teamA.length, pc[0]) +
+          ' <span class="vs">VS</span> ' +
+          bonus.teamB.map(nameOf).join(' &amp; ') + pairTagInline(bonus.teamB.length, pc[1]) +
+        '</div>' +
       '</div>';
+  }
+
+  function restingLineHtml(round) {
+    if (!round || round.resting.length === 0) return '';
+    return '<div class="resting-line">😴 Resting: ' + round.resting.map(nameOf).join(', ') + '</div>';
+  }
+
+  function roundBlockHtml(round) {
+    var html = '<div class="setup-label" style="margin-bottom:6px">Round ' + round.roundNumber + '</div>';
+    html += restingLineHtml(round);
+    round.courts.forEach(function (court, i) { html += courtCardHtml(court[0], court[1], i, round.courtPriorCounts && round.courtPriorCounts[i]); });
+    html += bonusCardHtml(round.bonusMatch, round.bonusPriorCounts);
+    return html;
   }
 
   function renderPlayTab() {
     var html = '';
-    html += '<button class="btn-primary" onclick="SC.generateRound()">' + icon('shuffle', 20, '#0F2318') + (S.currentRound ? 'Shuffle Next Round' : 'Start First Round') + '</button>';
-    if (S.currentRound) {
-      html += '<button class="btn-ghost" style="margin-top:10px" onclick="SC.shareRound()">' + icon('share', 14) + ' Share this round</button>';
+
+    html += '<div class="setup-pair">' +
+      '<div class="setup-card">' +
+        '<div class="setup-label">1. Courts 🏸</div>' +
+        '<div class="courts-toggle">' +
+          '<div class="courts-toggle-thumb' + (S.courtsCount === 2 ? ' pos2' : '') + '"></div>' +
+          '<button class="courts-toggle-opt' + (S.courtsCount === 1 ? ' active-text' : '') + '" onclick="SC.setCourtsValue(1)">1</button>' +
+          '<button class="courts-toggle-opt' + (S.courtsCount === 2 ? ' active-text' : '') + '" onclick="SC.setCourtsValue(2)">2</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="setup-card">' +
+        '<div class="setup-label">2. If 3 left 🔁</div>' +
+        '<div class="mode-toggle">' +
+          '<div class="mode-toggle-thumb' + (S.oddGroupMode === 'uneven' ? ' pos2' : '') + '"></div>' +
+          '<button class="mode-toggle-opt' + (S.oddGroupMode === 'bench' ? ' active-text' : '') + '" onclick="SC.setOddGroupMode(\'bench\')">1v1<br/>rest 1</button>' +
+          '<button class="mode-toggle-opt' + (S.oddGroupMode === 'uneven' ? ' active-text' : '') + '" onclick="SC.setOddGroupMode(\'uneven\')">1v2</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+    html += '<div class="panel" style="margin-top:10px">' +
+      '<div class="setup-label" style="margin-bottom:8px">3. Who\'s here 👥</div>' +
+      '<textarea id="playerInput" class="input" rows="2" placeholder="Type a name, or paste your whole list" onkeydown="if(event.key===\'Enter\' && !event.shiftKey){event.preventDefault();SC.addFromInput();}"></textarea>' +
+      '<div class="add-row" style="margin-top:8px">' +
+        '<div class="hint" style="margin-top:0;flex:1">Enter adds it. Paste a whole list to add everyone at once.</div>' +
+        '<button class="icon-btn" onclick="SC.addFromInput()">' + icon('plus', 18, '#0F2318') + '</button>' +
+      '</div>';
+    if (S.players.length > 0) {
+      html += '<div class="chips" style="margin-top:10px">';
+      html += S.players.map(function (p) {
+        return '<button class="chip' + (p.active ? '' : ' inactive') + '" onclick="SC.toggleActive(\'' + p.id + '\')">' + escapeHtml(p.name) + '</button>';
+      }).join('');
+      html += '</div>';
     }
-    if (S.snapshot) {
-      html += '<button class="btn-ghost" style="margin-top:10px" onclick="SC.undoRound()">' + icon('undo', 14) + ' Undo last round</button>';
-    }
-    if (S.currentRound) {
-      S.currentRound.courts.forEach(function (court, i) { html += courtCardHtml(court[0], court[1], i, S.currentRound.courtPriorCounts && S.currentRound.courtPriorCounts[i]); });
-      html += bonusCardHtml(S.currentRound.bonusMatch, S.currentRound.bonusPriorCounts);
-      if (S.currentRound.resting.length > 0) {
-        html += '<div class="bench-label">On the bench</div><div class="chips">';
-        html += S.currentRound.resting.map(function (id) { return '<span class="chip">' + nameOf(id) + '</span>'; }).join('');
-        html += '</div>';
-      }
+    html += '</div>';
+
+    html += '<div class="row-half">' +
+      '<button class="btn-ghost"' + (S.undoStack.length === 0 ? ' disabled style="opacity:0.4"' : '') + ' onclick="SC.undoRound()">↩️ Undo' + (S.undoStack.length > 0 ? ' (' + S.undoStack.length + ')' : '') + '</button>' +
+      '<button class="btn-primary" onclick="SC.generateRound()">🔀 ' + (S.currentRound ? 'Shuffle' : 'Start') + '</button>' +
+    '</div>';
+
+    if (S.pastRounds.length > 0) {
+      html += '<div class="history-header-row" style="margin-top:16px">' +
+        '<div class="setup-label" style="margin-bottom:0">Log</div>' +
+        '<button class="btn-small" onclick="SC.shareAllHistory()">📤 Share all</button>' +
+      '</div>';
+      var reversed = S.pastRounds.slice().reverse();
+      reversed.forEach(function (round, idx) {
+        if (idx > 0) html += '<div class="round-divider"></div>';
+        html += roundBlockHtml(round);
+      });
     } else {
-      html += '<p class="empty-note">Add players and set your court count, then shuffle the first round.</p>';
+      html += '<p class="empty-note">Add players above, then shuffle the first round.</p>';
     }
     return html;
   }
 
   function renderRosterTab() {
     var html = '';
-    html += '<div class="row">' +
-      '<input id="newNameInput" class="input" placeholder="Player name" onkeydown="if(event.key===\'Enter\'){SC.addPlayer()}" />' +
-      '<button class="icon-btn" onclick="SC.addPlayer()">' + icon('plus', 20, '#0F2318') + '</button>' +
-    '</div>';
-    html += '<button class="link-btn" onclick="SC.toggleBulk()">' + (S.showBulk ? 'Hide paste list' : 'Paste a list instead') + '</button>';
-    if (S.showBulk) {
-      html += '<textarea id="bulkTextArea" class="input" rows="5" placeholder="1. name one&#10;2. name two&#10;3. name three"></textarea>';
-      html += '<div class="hint">One name per line — numbering, dots, and bullets are stripped automatically.</div>';
-      html += '<button class="btn-primary" style="margin-top:8px" onclick="SC.addBulkPlayers()">Add all names</button>';
-    }
+
     if (S.players.length === 0) {
-      html += '<p class="empty-note">No players yet. Add your first one above.</p>';
+      html += '<p class="empty-note">No players yet — add some from the Play tab.</p>';
     }
+
     var dupGroups = findDuplicateGroups();
     if (dupGroups.length > 0) {
       html += '<div class="notice" style="border-color:#E4572E">';
@@ -724,6 +779,7 @@
       });
       html += '</div>';
     }
+
     S.players.forEach(function (p) {
       html += '<div class="roster-row' + (p.active ? '' : ' inactive') + '">' +
         '<div class="roster-name">' + escapeHtml(p.name) + '<div class="roster-stats">Played ' + p.gamesPlayed + ' · Rested ' + p.gamesRested + '</div></div>' +
@@ -731,106 +787,50 @@
         '<button class="roster-btn" style="color:#E4572E" onclick="SC.removePlayer(\'' + p.id + '\')">' + icon('trash', 18) + '</button>' +
       '</div>';
     });
-    return html;
-  }
 
-  function renderHistoryTab() {
-    var html = '';
-    if (S.pastRounds.length === 0) {
-      html += '<p class="empty-note">No rounds played yet — shuffle one to start building history.</p>';
-    }
-    S.pastRounds.slice().reverse().forEach(function (r) {
-      html += '<div class="history-round"><div class="history-title">Round ' + r.roundNumber + '</div>';
-      r.courts.forEach(function (court, i) {
-        var pc = (r.courtPriorCounts && r.courtPriorCounts[i]) || [null, null];
-        html += '<div class="history-line"><span class="history-dim">Ct ' + (i + 1) + ': </span>' +
-          '<strong>' + court[0].map(nameOf).join(' &amp; ') + historyTagText(pc[0]) + '</strong>' +
-          '<span class="history-dim"> vs </span>' +
-          '<strong>' + court[1].map(nameOf).join(' &amp; ') + historyTagText(pc[1]) + '</strong></div>';
-      });
-      if (r.bonusMatch) {
-        var bpc = r.bonusPriorCounts || [null, null];
-        html += '<div class="history-line"><span class="history-dim">Bonus (' + (r.bonusMatch.type === 'uneven' ? '1v2' : '1v1') + '): </span>' +
-          '<strong>' + r.bonusMatch.teamA.map(nameOf).join(' &amp; ') + historyTagText(bpc[0]) + '</strong>' +
-          '<span class="history-dim"> vs </span>' +
-          '<strong>' + r.bonusMatch.teamB.map(nameOf).join(' &amp; ') + historyTagText(bpc[1]) + '</strong></div>';
-      }
-      if (r.resting.length > 0) {
-        html += '<div class="history-rest">Rested: ' + r.resting.map(nameOf).join(', ') + '</div>';
-      }
-      html += '</div>';
-    });
-    return html;
-  }
-
-  function renderSettingsTab() {
-    var html = '';
-    html += '<div class="settings-card">' +
-      '<div class="settings-desc" style="text-transform:uppercase;letter-spacing:0.08em;font-size:11px;margin-bottom:12px">Courts available</div>' +
-      '<div class="stepper">' +
-        '<button onclick="SC.setCourts(-1)">' + icon('minus', 18) + '</button>' +
-        '<div class="count">' + S.courtsCount + '</div>' +
-        '<button onclick="SC.setCourts(1)">' + icon('plus', 18) + '</button>' +
-      '</div>' +
-      '<div class="stepper-note">' + (S.courtsCount * 4) + ' players can play at once</div>' +
-    '</div>';
-
-    html += '<div class="settings-card">' +
-      '<div class="settings-title">When 3 players are left over</div>' +
-      '<div class="settings-desc">How to use a leftover trio instead of leaving them all resting</div>' +
-      '<div class="segmented">' +
-        '<button class="' + (S.oddGroupMode === 'bench' ? 'active' : '') + '" onclick="SC.setOddGroupMode(\'bench\')">1 vs 1, rest 1</button>' +
-        '<button class="' + (S.oddGroupMode === 'uneven' ? 'active' : '') + '" onclick="SC.setOddGroupMode(\'uneven\')">1 vs 2</button>' +
-      '</div>' +
-    '</div>';
-
-    html += '<div class="info-box">Every round, the players with the fewest games so far get priority to play, so play and rest stay even for everyone. Partners and opponents are chosen to avoid repeats — anyone who hasn\'t teamed up or faced off yet gets matched first. The same group also won\'t be benched together twice in a row if it can be avoided.</div>';
-
-    html += '<div class="settings-card">' +
-      '<div class="settings-title">Hand off to another device</div>' +
-      '<div class="settings-desc">Someone else running today\'s session on their own phone? Copy a backup code and send it to them — they paste it in below to load your exact roster and history.</div>' +
-      '<button class="btn-primary" onclick="SC.copyBackupCode()">Copy backup code</button>' +
-      (S.exportCode ? '<textarea class="input" rows="3" readonly onclick="this.select()" style="margin-top:10px">' + escapeHtml(S.exportCode) + '</textarea>' : '') +
-      '<button class="link-btn" onclick="SC.toggleImportPanel()">' + (S.showImport ? 'Hide import' : 'Paste a backup code to load') + '</button>' +
-      (S.showImport ? (
-        '<textarea id="importCodeArea" class="input" rows="3" placeholder="Paste backup code here">' + escapeHtml(S.importDraftText || '') + '</textarea>' +
-        '<button class="reset-btn' + (S.confirmingImport ? ' confirming' : '') + '" style="margin-top:8px" onclick="SC.loadBackupCode()">' +
-        (S.confirmingImport ? 'Tap again to confirm — replaces this device\'s data' : 'Load backup code') + '</button>'
-      ) : '') +
-    '</div>';
-
-    html += '<div class="settings-card">' +
-      '<div class="settings-title">Start a new session</div>' +
-      '<div class="settings-desc">Keeps everyone\'s name on the roster, resets play/rest counts and pairing history to zero — for whoever\'s running it today.</div>' +
+    html += '<div class="panel" style="margin-top:20px">' +
+      '<div class="panel-title">Start a new session</div>' +
+      '<div class="panel-desc">Keeps everyone\'s name on the roster, resets play/rest counts and pairing history to zero — for whoever\'s running it today.</div>' +
       '<button class="btn-session' + (S.confirmingNewSession ? ' confirming' : '') + '" onclick="SC.newSession()">' +
         (S.confirmingNewSession ? 'Tap again to confirm new session' : 'New session') +
       '</button>' +
     '</div>';
 
-    html += '<button class="reset-btn' + (S.confirmingReset ? ' confirming' : '') + '" onclick="SC.resetAll()">' + (S.confirmingReset ? 'Tap again to confirm reset' : 'Reset all players &amp; history') + '</button>';
+    html += '<div class="panel">' +
+      '<div class="panel-title">Hand off to another device</div>' +
+      '<div class="panel-desc">Someone else running today\'s session on their own phone? Copy a backup code and send it to them — they paste it in below to load your exact roster and history.</div>' +
+      '<button class="btn-primary" onclick="SC.copyBackupCode()">Copy backup code</button>' +
+      (S.exportCode ? '<textarea class="input" rows="3" readonly onclick="this.select()" style="margin-top:10px">' + escapeHtml(S.exportCode) + '</textarea>' : '') +
+      '<button class="link-btn" onclick="SC.toggleImportPanel()">' + (S.showImport ? 'Hide import' : 'Paste a backup code to load') + '</button>' +
+      (S.showImport ? (
+        '<textarea id="importCodeArea" class="input" rows="3" placeholder="Paste backup code here" style="margin-top:8px">' + escapeHtml(S.importDraftText || '') + '</textarea>' +
+        '<button class="reset-btn' + (S.confirmingImport ? ' confirming' : '') + '" style="margin-top:8px" onclick="SC.loadBackupCode()">' +
+        (S.confirmingImport ? 'Tap again to confirm — replaces this device\'s data' : 'Load backup code') + '</button>'
+      ) : '') +
+    '</div>';
+
+    html += '<button class="reset-btn" style="margin-top:16px;background:' + (S.confirmingReset ? '#E4572E' : 'transparent') + ';color:' + (S.confirmingReset ? '#F4F1E4' : '#E4572E') + '" onclick="SC.resetAll()">' + (S.confirmingReset ? 'Tap again to confirm reset' : 'Reset all players &amp; history') + '</button>';
     html += '<div class="app-footer">Frame\'s Shuffle Court · v' + APP_VERSION + '<br/>Powered by Claude</div>';
     return html;
   }
 
   function render() {
     var tabs = [
-      { id: 'play', label: 'Play', icon: 'shuffle' },
-      { id: 'roster', label: 'Roster', icon: 'users' },
-      { id: 'history', label: 'History', icon: 'history' },
-      { id: 'settings', label: 'Settings', icon: 'settings' }
+      { id: 'play', label: 'Play', icon: 'shuffle_tab' },
+      { id: 'roster', label: 'Roster', icon: 'users' }
     ];
 
     var body;
     if (S.tab === 'play') body = renderPlayTab();
-    else if (S.tab === 'roster') body = renderRosterTab();
-    else if (S.tab === 'history') body = renderHistoryTab();
-    else body = renderSettingsTab();
+    else body = renderRosterTab();
+
+    var subLine = (S.roundNumber > 0 ? ('Round ' + S.roundNumber) : 'No rounds yet') + ' · 👥 ' + activeCount() + ' available';
 
     var html = '' +
       '<div class="wrap"><div class="app">' +
         '<div class="header">' +
-          '<div><h1 class="display">FRAME\'S SHUFFLE COURT</h1><div class="sub">' + (S.roundNumber > 0 ? ('Round ' + S.roundNumber) : 'No rounds yet') + ' · ' + activeCount() + ' available</div></div>' +
-          '<div class="courts-badge">' + S.courtsCount + '<small> ct</small></div>' +
+          '<h1 class="display">🏸 Frame\'s Shuffle Court</h1>' +
+          '<div class="sub">' + subLine + '</div>' +
         '</div>' +
         '<div class="main">' +
           (S.notice ? '<div class="notice">' + escapeHtml(S.notice) + '</div>' : '') +
@@ -844,11 +844,6 @@
       '</div></div>';
 
     document.getElementById('root').innerHTML = html;
-
-    if (S.tab === 'roster' && S.showBulk) {
-      var ta = document.getElementById('bulkTextArea');
-      if (ta) ta.focus();
-    }
   }
 
   render();
