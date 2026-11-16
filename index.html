@@ -252,7 +252,8 @@
 
     var normalized = raw.replace(/\r\n|\r/g, '\n');
     normalized = normalized.replace(/[ \t]*(\d{1,3}\s*[.)\-:])/g, '\n$1');
-    var lines = normalized.split('\n').map(function (l) { return l.trim(); }).filter(Boolean);
+    // Every space, comma, semicolon or newline starts a new name.
+    var lines = normalized.split(/[\s,;\u200B-\u200D\uFEFF\u00A0]+/).map(function (l) { return l.trim(); }).filter(Boolean);
 
     var cleaned = lines
       .map(function (l) { return l.replace(/^[\(\[]?\d{1,3}[\)\].\-:]?\s*/, ''); })
@@ -269,7 +270,7 @@
       var key = normalizeName(name);
       if (existingNames.has(key) || seen.has(key)) { dupCount++; return; }
       seen.add(key);
-      newPlayers.push({ id: uid(), name: name, active: true, gamesPlayed: 0, gamesRested: 0, streak: 0, lastPlayedRound: S.roundNumber, joinRound: S.roundNumber });
+      newPlayers.push({ id: uid(), name: name, active: true, gamesPlayed: 0, gamesRested: 0, singlesPlayed: 0, streak: 0, lastPlayedRound: S.roundNumber, joinRound: S.roundNumber });
     });
 
     S.players = S.players.concat(newPlayers);
@@ -304,6 +305,7 @@
     var merged = Object.assign({}, keep, {
       gamesPlayed: keep.gamesPlayed + remove.gamesPlayed,
       gamesRested: keep.gamesRested + remove.gamesRested,
+      singlesPlayed: (keep.singlesPlayed || 0) + (remove.singlesPlayed || 0),
       streak: Math.max(keep.streak || 0, remove.streak || 0),
       lastPlayedRound: Math.max(keep.lastPlayedRound, remove.lastPlayedRound),
       active: keep.active || remove.active
@@ -324,6 +326,7 @@
     }
     S.history.partnerCounts = remapCounts(S.history.partnerCounts);
     S.history.opponentCounts = remapCounts(S.history.opponentCounts);
+    if (S.history.singlesPairs) S.history.singlesPairs = remapCounts(S.history.singlesPairs);
     S.history.restCombos = Array.from(new Set(S.history.restCombos.map(function (comboKey) {
       var ids = comboKey.split(',').map(function (id) { return id === removeId ? keepId : id; });
       return Array.from(new Set(ids)).sort().join(',');
@@ -360,6 +363,9 @@
   }
 
   function generateRound() {
+    // Names typed but not yet added would be wiped by the re-render, so add them first.
+    var pendingInput = document.getElementById('playerInput');
+    if (pendingInput && pendingInput.value.trim()) addFromInput();
     S.notice = '';
     var active = S.players.filter(function (p) { return p.active; });
     if (active.length < 2) { S.notice = 'Add at least 2 available players to shuffle a round.'; render(); return; }
@@ -375,6 +381,9 @@
       if (aRate !== bRate) return bRate - aRate;
       var aw = S.roundNumber - a.lastPlayedRound, bw = S.roundNumber - b.lastPlayedRound;
       if (aw !== bw) return bw - aw;
+      // Soft preference: whoever has played fewer singles goes toward the back (the 1v1 slot).
+      var aSg = a.singlesPlayed || 0, bSg = b.singlesPlayed || 0;
+      if (aSg !== bSg) return bSg - aSg;
       return Math.random() - 0.5;
     });
 
@@ -384,6 +393,22 @@
     var mainCount = fullGroups * 4;
     var leftoverCount = capped - mainCount;
     var bonusCourtAvailable = fullGroups < S.courtsCount;
+
+    // Nobody rests this round, so who gets the 1v1 is purely a fairness choice:
+    // pick the pair with the fewest singles played, avoiding a rematch if possible.
+    if (leftoverCount === 2 && bonusCourtAvailable && active.length <= slots) {
+      var sp = S.history.singlesPairs || {};
+      var bestPair = null, bestScore = Infinity;
+      for (var i = 0; i < sorted.length; i++) {
+        for (var j = i + 1; j < sorted.length; j++) {
+          var sc = ((sorted[i].singlesPlayed || 0) + (sorted[j].singlesPlayed || 0)) * 100
+            + (sp[pairKey(sorted[i].id, sorted[j].id)] || 0) * 10 + Math.random();
+          if (sc < bestScore) { bestScore = sc; bestPair = [sorted[i].id, sorted[j].id]; }
+        }
+      }
+      sorted = sorted.filter(function (p) { return bestPair.indexOf(p.id) === -1; })
+        .concat(sorted.filter(function (p) { return bestPair.indexOf(p.id) !== -1; }));
+    }
 
     var playing = sorted.slice(0, mainCount);
     var bonusCandidates = (leftoverCount >= 2 && bonusCourtAvailable) ? sorted.slice(mainCount, mainCount + leftoverCount) : [];
@@ -478,8 +503,14 @@
     var newRoundNumber = S.roundNumber + 1;
     var playingIds = new Set(playing.map(function (p) { return p.id; }).concat(bonusPlayingIds));
     var restingIds = new Set(resting.map(function (p) { return p.id; }));
+    var singlesIds = new Set(bonusPlayingIds);
+    var newSinglesPairs = Object.assign({}, S.history.singlesPairs || {});
+    if (bonusMatch && bonusMatch.type === 'singles') {
+      var spk = pairKey(bonusMatch.teamA[0], bonusMatch.teamB[0]);
+      newSinglesPairs[spk] = (newSinglesPairs[spk] || 0) + 1;
+    }
     S.players = S.players.map(function (p) {
-      if (playingIds.has(p.id)) return Object.assign({}, p, { gamesPlayed: p.gamesPlayed + 1, lastPlayedRound: newRoundNumber, streak: (p.streak || 0) + 1 });
+      if (playingIds.has(p.id)) return Object.assign({}, p, { gamesPlayed: p.gamesPlayed + 1, singlesPlayed: (p.singlesPlayed || 0) + (singlesIds.has(p.id) ? 1 : 0), lastPlayedRound: newRoundNumber, streak: (p.streak || 0) + 1 });
       if (restingIds.has(p.id)) return Object.assign({}, p, { gamesRested: p.gamesRested + 1, streak: 0 });
       return p;
     });
@@ -493,7 +524,7 @@
       resting: resting.map(function (p) { return p.id; })
     };
 
-    S.history = { partnerCounts: newPartnerCounts, opponentCounts: newOpponentCounts, restCombos: newRestCombos };
+    S.history = { partnerCounts: newPartnerCounts, opponentCounts: newOpponentCounts, restCombos: newRestCombos, singlesPairs: newSinglesPairs };
     S.roundNumber = newRoundNumber;
     S.currentRound = roundData;
     S.pastRounds = S.pastRounds.concat([roundData]);
@@ -523,7 +554,7 @@
   function newSession() {
     if (!S.confirmingNewSession) { S.confirmingNewSession = true; render(); return; }
     S.players = S.players.map(function (p) {
-      return Object.assign({}, p, { gamesPlayed: 0, gamesRested: 0, streak: 0, lastPlayedRound: 0, joinRound: 0 });
+      return Object.assign({}, p, { gamesPlayed: 0, gamesRested: 0, singlesPlayed: 0, streak: 0, lastPlayedRound: 0, joinRound: 0 });
     });
     S.history = { partnerCounts: {}, opponentCounts: {}, restCombos: [] };
     S.roundNumber = 0; S.currentRound = null; S.pastRounds = []; S.undoStack = []; S.confirmingNewSession = false;
