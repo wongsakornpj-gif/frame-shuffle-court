@@ -98,6 +98,42 @@
   .tab-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 0; background: none; border: none; color: #9FB6A8; }
   .tab-btn.active { color: #FFC93C; }
   .tab-btn span { font-size: 10px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; }
+  .main-cost { padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)); padding-top: 8px; }
+  .cost-wrap { display: flex; flex-direction: column; gap: 8px; }
+  .cost-wrap .panel { margin-top: 0; padding: 10px 12px; }
+  .cost-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; }
+  .cost-field { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .cost-label { font-size: 10.5px; font-weight: 600; color: #9FB6A8; letter-spacing: 0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cost-input { font-size: 16px; padding: 7px 10px; height: 38px; border-radius: 10px; font-variant-numeric: tabular-nums; }
+  select.cost-input { appearance: none; -webkit-appearance: none; background-image: linear-gradient(45deg, transparent 50%, #9FB6A8 50%), linear-gradient(135deg, #9FB6A8 50%, transparent 50%); background-position: calc(100% - 17px) 16px, calc(100% - 12px) 16px; background-size: 5px 5px; background-repeat: no-repeat; padding-right: 28px; }
+  .cost-hint { font-size: 11px; color: #9FB6A8; display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-top: 6px; font-variant-numeric: tabular-nums; }
+  .cost-hint b { color: #FFC93C; font-weight: 600; }
+  .cost-link { background: none; border: none; padding: 0; color: #FFC93C; font-size: 11px; text-decoration: underline; }
+  .cost-link[hidden] { display: none; }
+  .cost-rows { display: flex; flex-direction: column; gap: 3px; font-size: 13px; font-variant-numeric: tabular-nums; }
+  .cost-row { display: flex; justify-content: space-between; gap: 10px; }
+  .cost-row .k { color: #9FB6A8; min-width: 0; }
+  .cost-row .v { font-weight: 600; white-space: nowrap; }
+  .cost-row.total { margin-top: 3px; padding-top: 6px; border-top: 1px solid #274A3E; font-size: 15px; }
+  .cost-row.total .k { color: #F4F1E4; font-weight: 600; }
+  .cost-pay { margin-top: 8px; background: #FFC93C; color: #0F2318; border-radius: 12px; padding: 9px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .cost-pay .lbl { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+  .cost-pay .sub { font-size: 11px; opacity: 0.85; font-variant-numeric: tabular-nums; }
+  .cost-pay .amt { font-family: Georgia, 'Times New Roman', serif; font-weight: 900; font-size: 34px; line-height: 1; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .cost-pay .amt small { font-size: 16px; font-weight: 600; margin-left: 3px; }
+  .cost-diff { margin-top: 7px; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 11.5px; color: #9FB6A8; font-variant-numeric: tabular-nums; }
+  .cost-diff b { color: #F4F1E4; font-weight: 600; }
+  .cost-pill { background: #1C4238; color: #FFC93C; font-weight: 600; font-size: 11px; padding: 2px 9px; border-radius: 999px; }
+  .cost-actions { margin-top: 8px; }
+  .cost-actions .reset-btn, .cost-actions .btn-primary { margin-top: 0; padding: 12px 8px; }
+  .cost-empty { text-align: center; font-size: 13px; color: #9FB6A8; padding: 6px 0 2px; }
+  @media (max-height: 700px) {
+    .main-cost { padding-top: 4px; }
+    .cost-wrap { gap: 6px; }
+    .cost-input { height: 34px; padding-block: 5px; }
+    select.cost-input { background-position: calc(100% - 17px) 14px, calc(100% - 12px) 14px; }
+    .cost-pay .amt { font-size: 30px; }
+  }
   svg { display: block; }
 </style>
 </head>
@@ -108,7 +144,7 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '2.2.0';
+  var APP_VERSION = '2.3.0';
   var MAX_UNDO = 20;
 
   // ---------- storage ----------
@@ -124,7 +160,7 @@
         players: S.players, courtsCount: S.courtsCount, noComboRest: S.noComboRest,
         oddGroupMode: S.oddGroupMode, history: S.history, roundNumber: S.roundNumber,
         currentRound: S.currentRound, pastRounds: S.pastRounds.slice(-200),
-        undoStack: S.undoStack.slice(-MAX_UNDO)
+        undoStack: S.undoStack.slice(-MAX_UNDO), cost: S.cost
       }));
     } catch (e) { console.error('save failed', e); }
   }
@@ -199,11 +235,13 @@
   function normalizeName(s) { return cleanName(s).toLowerCase(); }
 
   // ---------- state ----------
+  var COST_DEFAULTS = { fee: '', hours: '', price: '', pack: 12, qty: '', players: null };
   var S = {
     players: [], courtsCount: 1, noComboRest: true, oddGroupMode: 'bench',
     history: { partnerCounts: {}, opponentCounts: {}, restCombos: [] },
     roundNumber: 0, currentRound: null, pastRounds: [], undoStack: [],
-    tab: 'play', notice: '', confirmingReset: false, confirmingNewSession: false,
+    tab: 'play', notice: '', confirmingReset: false, confirmingNewSession: false, confirmingCostReset: false,
+    cost: Object.assign({}, COST_DEFAULTS),
     exportCode: '', showImport: false, confirmingImport: false, importDraftText: ''
   };
 
@@ -219,6 +257,7 @@
       S.currentRound = d.currentRound || null;
       S.pastRounds = d.pastRounds || [];
       S.undoStack = d.undoStack || [];
+      if (d.cost) S.cost = Object.assign({}, COST_DEFAULTS, d.cost);
     }
   })();
 
@@ -239,6 +278,7 @@
       history: '<path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/>',
       check: '<path d="M20 6 9 17l-5-5"/>',
       x: '<path d="M18 6 6 18M6 6l12 12"/>',
+      calc: '<rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M8.5 7.5h7M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01"/>',
       shuffle_tab: '<path d="m18 4 3 3-3 3M18 20l3-3-3-3M2 7h3a4 4 0 0 1 3.2 1.6l6 8A4 4 0 0 0 17.4 18H21M2 17h3a4 4 0 0 0 3.2-1.6l1-1.4M13.5 7.6l.9-1.2A4 4 0 0 1 17.6 4.6H21"/>'
     };
     return '<svg ' + attrs + '>' + (paths[name] || '') + '</svg>';
@@ -675,6 +715,126 @@
     }
   }
 
+  // ---------- cost calculator ----------
+  var costResetTimer = null;
+  function costNum(v) { var n = parseFloat(v); return isFinite(n) && n > 0 ? n : 0; }
+  function fmtN(n, max) { return n.toLocaleString('en-US', { maximumFractionDigits: max == null ? 2 : max }); }
+  function baht(n) { return fmtN(n) + ' ฿'; }
+
+  function computeCost() {
+    var c = S.cost;
+    var fee = costNum(c.fee), hours = costNum(c.hours), price = costNum(c.price), qty = costNum(c.qty);
+    var per = Math.min(24, Math.max(1, parseInt(c.pack, 10) || 12));
+    var players = c.players === null ? activeCount() : c.players;
+    var perPiece = price / per;
+    var courtTotal = fee * hours, shutTotal = perPiece * qty, grand = courtTotal + shutTotal;
+    // Always round UP to the next 10 so the group never collects less than the real cost.
+    var each = (players > 0 && grand > 0) ? Math.ceil(grand / players / 10 - 1e-9) * 10 : null;
+    var collected = each === null ? 0 : each * players;
+    return { fee: fee, hours: hours, price: price, qty: qty, per: per, players: players, perPiece: perPiece,
+      courtTotal: courtTotal, shutTotal: shutTotal, grand: grand, each: each, collected: collected,
+      extra: Math.round((collected - grand) * 100) / 100 };
+  }
+
+  function costSummaryText() {
+    var r = computeCost();
+    if (r.grand <= 0) return '';
+    return [
+      '🏸 Frame\'s Shuffle Court — cost',
+      'Court: ' + fmtN(r.fee) + ' ฿ × ' + fmtN(r.hours) + ' court-hours = ' + baht(r.courtTotal),
+      'Shuttles: ' + fmtN(r.perPiece) + ' ฿ × ' + fmtN(r.qty) + ' pieces = ' + baht(r.shutTotal),
+      'Total: ' + baht(r.grand) + ' · Players: ' + r.players,
+      '🐶 Each pays: ' + (r.each === null ? '—' : baht(r.each))
+    ].join('\n');
+  }
+
+  function setText(id, t) { var el = document.getElementById(id); if (el) el.textContent = t; }
+
+  // Updates the numbers in place, so typing never loses focus the way a full re-render would.
+  function updateCostResults() {
+    if (!document.getElementById('cost-amt')) return;
+    var r = computeCost();
+    setText('cost-court-k', fmtN(r.fee) + ' ฿ × ' + fmtN(r.hours) + ' court-hours');
+    setText('cost-court-v', baht(r.courtTotal));
+    setText('cost-shut-k', fmtN(r.perPiece) + ' ฿ × ' + fmtN(r.qty) + ' pieces');
+    setText('cost-shut-v', baht(r.shutTotal));
+    setText('cost-grand-v', baht(r.grand));
+    setText('cost-amt', r.each === null ? '—' : fmtN(r.each, 0));
+    setText('cost-sub', r.each === null
+      ? (r.players > 0 ? 'Fill in the costs above' : 'Enter the number of players')
+      : fmtN(r.grand / r.players) + ' ฿ each, rounded up to the next 10');
+
+    var hint = document.getElementById('cost-hint');
+    if (hint) hint.innerHTML = r.per === 1
+      ? 'Price per piece: <b>' + baht(r.perPiece) + '</b>'
+      : baht(r.price) + ' ÷ ' + r.per + ' = <b>' + baht(r.perPiece) + '</b> per piece';
+
+    var ua = document.getElementById('cost-use-active');
+    if (ua) {
+      var show = S.cost.players !== null && S.cost.players !== activeCount();
+      ua.hidden = !show; ua.textContent = 'Use ' + activeCount() + ' available';
+    }
+    var pin = document.getElementById('cost-players');
+    if (pin && document.activeElement !== pin) pin.value = r.players;
+
+    var diff = document.getElementById('cost-diff');
+    if (diff) diff.innerHTML = r.each === null ? '' :
+      '<span>Collected <b>' + baht(r.collected) + '</b> vs actual <b>' + baht(r.grand) + '</b></span>' +
+      '<span class="cost-pill">' + (r.extra === 0 ? 'Exact' : '+' + baht(r.extra) + ' extra') + '</span>';
+  }
+
+  function updateCostResetBtn() {
+    var b = document.getElementById('cost-reset');
+    if (!b) return;
+    b.classList.toggle('confirming', S.confirmingCostReset);
+    b.textContent = S.confirmingCostReset ? 'Tap again to reset' : 'Reset';
+  }
+
+  function costInput(field, value) {
+    if (field === 'players') {
+      if (value === '') S.cost.players = null;
+      else { var v = parseInt(value, 10); S.cost.players = isFinite(v) && v >= 0 ? v : 0; }
+    } else if (field === 'pack') {
+      S.cost.pack = parseInt(value, 10) || 12;
+    } else {
+      S.cost[field] = value;
+    }
+    if (S.confirmingCostReset) { S.confirmingCostReset = false; updateCostResetBtn(); }
+    saveState(); updateCostResults();
+  }
+
+  function costUseActive() { S.cost.players = null; saveState(); updateCostResults(); }
+
+  function costReset() {
+    clearTimeout(costResetTimer);
+    if (!S.confirmingCostReset) {
+      S.confirmingCostReset = true; updateCostResetBtn();
+      costResetTimer = setTimeout(function () { S.confirmingCostReset = false; updateCostResetBtn(); }, 3000);
+      return;
+    }
+    S.confirmingCostReset = false;
+    S.cost = Object.assign({}, COST_DEFAULTS);
+    saveState(); render();
+  }
+
+  function shareCost() {
+    var text = costSummaryText();
+    if (!text) return;
+    var btn = document.getElementById('cost-share');
+    function flash(msg) {
+      if (!btn) return;
+      btn.textContent = msg;
+      setTimeout(function () { var b = document.getElementById('cost-share'); if (b) b.textContent = 'Share'; }, 1800);
+    }
+    if (navigator.share) {
+      navigator.share({ text: text, title: 'Shuffle Court — cost' }).catch(function () { /* cancelled */ });
+    } else if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { flash('Copied!'); }).catch(function () { fallbackCopy(text); });
+    } else {
+      fallbackCopy(text);
+    }
+  }
+
   function shareAllHistory() { shareText(formatAllHistoryText(), 'Shuffle Court — full session'); }
 
   window.SC = {
@@ -682,7 +842,8 @@
     generateRound: generateRound, undoRound: undoRound, resetAll: resetAll, newSession: newSession, setTab: setTab,
     setCourtsValue: setCourtsValue, setOddGroupMode: setOddGroupMode,
     mergeDuplicateGroup: mergeDuplicateGroup, shareAllHistory: shareAllHistory,
-    copyBackupCode: copyBackupCode, toggleImportPanel: toggleImportPanel, loadBackupCode: loadBackupCode
+    copyBackupCode: copyBackupCode, toggleImportPanel: toggleImportPanel, loadBackupCode: loadBackupCode,
+    costInput: costInput, costUseActive: costUseActive, costReset: costReset, shareCost: shareCost
   };
 
   // ---------- render ----------
@@ -790,6 +951,50 @@
     return html;
   }
 
+  function costField(id, label, value, step) {
+    return '<div class="cost-field"><label class="cost-label" for="cost-' + id + '">' + label + '</label>' +
+      '<input class="input cost-input" id="cost-' + id + '" type="number" inputmode="decimal" min="0" placeholder="0"' +
+      (step ? ' step="' + step + '"' : '') + ' value="' + escapeHtml(value) + '" oninput="SC.costInput(\'' + id + '\', this.value)" /></div>';
+  }
+
+  function renderCostTab() {
+    var c = S.cost;
+    var packOpts = '';
+    for (var i = 1; i <= 24; i++) {
+      packOpts += '<option value="' + i + '"' + (Number(c.pack) === i ? ' selected' : '') + '>' + (i === 1 ? '1 (per piece)' : i) + '</option>';
+    }
+    var players = c.players === null ? activeCount() : c.players;
+    return '<div class="cost-wrap">' +
+      '<div class="panel">' +
+        '<div class="cost-grid">' +
+          costField('fee', 'Court fee per hour (฿)', c.fee) +
+          costField('hours', 'Court-hours (all courts) 🏸', c.hours, '0.5') +
+          costField('price', 'Shuttle price (฿)', c.price) +
+          '<div class="cost-field"><label class="cost-label" for="cost-pack">Pieces per pack</label>' +
+            '<select class="input cost-input" id="cost-pack" onchange="SC.costInput(\'pack\', this.value)">' + packOpts + '</select></div>' +
+          costField('qty', 'Shuttles used (pieces)', c.qty) +
+          '<div class="cost-field"><label class="cost-label" for="cost-players">Players</label>' +
+            '<input class="input cost-input" id="cost-players" type="number" inputmode="numeric" min="0" value="' + players + '" oninput="SC.costInput(\'players\', this.value)" /></div>' +
+        '</div>' +
+        '<div class="cost-hint"><span id="cost-hint"></span><button class="cost-link" id="cost-use-active" type="button" hidden onclick="SC.costUseActive()"></button></div>' +
+      '</div>' +
+      '<div class="panel">' +
+        '<div class="cost-rows">' +
+          '<div class="cost-row"><span class="k" id="cost-court-k"></span><span class="v" id="cost-court-v"></span></div>' +
+          '<div class="cost-row"><span class="k" id="cost-shut-k"></span><span class="v" id="cost-shut-v"></span></div>' +
+          '<div class="cost-row total"><span class="k">Grand total 💰</span><span class="v" id="cost-grand-v"></span></div>' +
+        '</div>' +
+        '<div class="cost-pay"><div><div class="lbl">Each player pays 🐶</div><div class="sub" id="cost-sub"></div></div>' +
+          '<div class="amt"><span id="cost-amt">—</span><small>฿</small></div></div>' +
+        '<div class="cost-diff" id="cost-diff"></div>' +
+        '<div class="row-half cost-actions">' +
+          '<button class="reset-btn" id="cost-reset" onclick="SC.costReset()">Reset</button>' +
+          '<button class="btn-primary" id="cost-share" onclick="SC.shareCost()">Share</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
   function renderRosterTab() {
     var html = '';
 
@@ -848,11 +1053,13 @@
   function render() {
     var tabs = [
       { id: 'play', label: 'Play', icon: 'shuffle_tab' },
-      { id: 'roster', label: 'Roster', icon: 'users' }
+      { id: 'roster', label: 'Roster', icon: 'users' },
+      { id: 'cost', label: 'Cost', icon: 'calc' }
     ];
 
     var body;
     if (S.tab === 'play') body = renderPlayTab();
+    else if (S.tab === 'cost') body = renderCostTab();
     else body = renderRosterTab();
 
     var subLine = (S.roundNumber > 0 ? ('Round ' + S.roundNumber) : 'No rounds yet') + ' · 👥 ' + activeCount() + ' available';
@@ -863,7 +1070,7 @@
           '<h1 class="display">🏸 Frame\'s Shuffle Court</h1>' +
           '<div class="sub">' + subLine + '</div>' +
         '</div>' +
-        '<div class="main">' +
+        '<div class="main' + (S.tab === 'cost' ? ' main-cost' : '') + '">' +
           (S.notice ? '<div class="notice">' + escapeHtml(S.notice) + '</div>' : '') +
           body +
         '</div>' +
@@ -875,6 +1082,7 @@
       '</div></div>';
 
     document.getElementById('root').innerHTML = html;
+    if (S.tab === 'cost') updateCostResults();
   }
 
   render();
