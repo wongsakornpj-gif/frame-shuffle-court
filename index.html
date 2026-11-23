@@ -116,6 +116,9 @@
   .cost-row .v { font-weight: 600; white-space: nowrap; }
   .cost-row.total { margin-top: 3px; padding-top: 6px; border-top: 1px solid #274A3E; font-size: 15px; }
   .cost-row.total .k { color: #F4F1E4; font-weight: 600; }
+  .cost-round { margin-top: 8px; display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 12px; color: #9FB6A8; }
+  .cost-toggle { flex: none; width: 140px; }
+  .cost-toggle .courts-toggle-opt { padding: 5px 0; font-size: 13px; }
   .cost-pay { margin-top: 8px; background: #FFC93C; color: #0F2318; border-radius: 12px; padding: 9px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
   .cost-pay .lbl { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
   .cost-pay .sub { font-size: 11px; opacity: 0.85; font-variant-numeric: tabular-nums; }
@@ -144,7 +147,7 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '2.3.0';
+  var APP_VERSION = '2.4.0';
   var MAX_UNDO = 20;
 
   // ---------- storage ----------
@@ -235,7 +238,7 @@
   function normalizeName(s) { return cleanName(s).toLowerCase(); }
 
   // ---------- state ----------
-  var COST_DEFAULTS = { fee: '', hours: '', price: '', pack: 12, qty: '', players: null };
+  var COST_DEFAULTS = { fee: '', hours: '', price: '', pack: 12, qty: '', players: null, round: 1 };
   var S = {
     players: [], courtsCount: 1, noComboRest: true, oddGroupMode: 'bench',
     history: { partnerCounts: {}, opponentCounts: {}, restCombos: [] },
@@ -728,10 +731,11 @@
     var players = c.players === null ? activeCount() : c.players;
     var perPiece = price / per;
     var courtTotal = fee * hours, shutTotal = perPiece * qty, grand = courtTotal + shutTotal;
-    // Always round UP to the next 10 so the group never collects less than the real cost.
-    var each = (players > 0 && grand > 0) ? Math.ceil(grand / players / 10 - 1e-9) * 10 : null;
+    // Always round UP (to the next 1 ฿ or 10 ฿) so the group never collects less than the real cost.
+    var step = Number(c.round) === 10 ? 10 : 1;
+    var each = (players > 0 && grand > 0) ? Math.ceil(grand / players / step - 1e-9) * step : null;
     var collected = each === null ? 0 : each * players;
-    return { fee: fee, hours: hours, price: price, qty: qty, per: per, players: players, perPiece: perPiece,
+    return { step: step, fee: fee, hours: hours, price: price, qty: qty, per: per, players: players, perPiece: perPiece,
       courtTotal: courtTotal, shutTotal: shutTotal, grand: grand, each: each, collected: collected,
       extra: Math.round((collected - grand) * 100) / 100 };
   }
@@ -762,7 +766,7 @@
     setText('cost-amt', r.each === null ? '—' : fmtN(r.each, 0));
     setText('cost-sub', r.each === null
       ? (r.players > 0 ? 'Fill in the costs above' : 'Enter the number of players')
-      : fmtN(r.grand / r.players) + ' ฿ each, rounded up to the next 10');
+      : fmtN(r.grand / r.players) + ' ฿ each, rounded up to ' + r.step + ' ฿');
 
     var hint = document.getElementById('cost-hint');
     if (hint) hint.innerHTML = r.per === 1
@@ -802,6 +806,8 @@
     if (S.confirmingCostReset) { S.confirmingCostReset = false; updateCostResetBtn(); }
     saveState(); updateCostResults();
   }
+
+  function setCostRound(n) { S.cost.round = n === 10 ? 10 : 1; saveState(); render(); }
 
   function costUseActive() { S.cost.players = null; saveState(); updateCostResults(); }
 
@@ -843,7 +849,7 @@
     setCourtsValue: setCourtsValue, setOddGroupMode: setOddGroupMode,
     mergeDuplicateGroup: mergeDuplicateGroup, shareAllHistory: shareAllHistory,
     copyBackupCode: copyBackupCode, toggleImportPanel: toggleImportPanel, loadBackupCode: loadBackupCode,
-    costInput: costInput, costUseActive: costUseActive, costReset: costReset, shareCost: shareCost
+    costInput: costInput, setCostRound: setCostRound, costUseActive: costUseActive, costReset: costReset, shareCost: shareCost
   };
 
   // ---------- render ----------
@@ -984,6 +990,11 @@
           '<div class="cost-row"><span class="k" id="cost-shut-k"></span><span class="v" id="cost-shut-v"></span></div>' +
           '<div class="cost-row total"><span class="k">Grand total 💰</span><span class="v" id="cost-grand-v"></span></div>' +
         '</div>' +
+        '<div class="cost-round"><span>Round up to nearest</span>' +
+          '<div class="courts-toggle cost-toggle"><div class="courts-toggle-thumb' + (Number(c.round) === 10 ? ' pos2' : '') + '"></div>' +
+            '<button class="courts-toggle-opt' + (Number(c.round) !== 10 ? ' active-text' : '') + '" onclick="SC.setCostRound(1)">1 ฿</button>' +
+            '<button class="courts-toggle-opt' + (Number(c.round) === 10 ? ' active-text' : '') + '" onclick="SC.setCostRound(10)">10 ฿</button>' +
+          '</div></div>' +
         '<div class="cost-pay"><div><div class="lbl">Each player pays 🐶</div><div class="sub" id="cost-sub"></div></div>' +
           '<div class="amt"><span id="cost-amt">—</span><small>฿</small></div></div>' +
         '<div class="cost-diff" id="cost-diff"></div>' +
