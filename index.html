@@ -116,11 +116,14 @@
   .cost-row .v { font-weight: 600; white-space: nowrap; }
   .cost-row.total { margin-top: 3px; padding-top: 6px; border-top: 1px solid #274A3E; font-size: 15px; }
   .cost-row.total .k { color: #F4F1E4; font-weight: 600; }
-  .cost-round { margin-top: 8px; display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 12px; color: #9FB6A8; }
-  .cost-toggle { flex: none; width: 140px; }
+  .cost-round { margin-top: 8px; display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 12px; color: #9FB6A8; white-space: nowrap; }
+  .cost-round span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .cost-toggle { flex: none; width: 120px; }
   .cost-toggle .courts-toggle-opt { padding: 5px 0; font-size: 13px; }
   .cost-pay { margin-top: 8px; background: #FFC93C; color: #0F2318; border-radius: 12px; padding: 9px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
   .cost-pay .lbl { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+  .cost-pay > div:first-child { min-width: 0; }
+  .cost-pay .lbl, .cost-pay .sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .cost-pay .sub { font-size: 11px; opacity: 0.85; font-variant-numeric: tabular-nums; }
   .cost-pay .amt { font-family: Georgia, 'Times New Roman', serif; font-weight: 900; font-size: 34px; line-height: 1; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .cost-pay .amt small { font-size: 16px; font-weight: 600; margin-left: 3px; }
@@ -130,6 +133,7 @@
   .cost-actions { margin-top: 8px; }
   .cost-actions .reset-btn, .cost-actions .btn-primary { margin-top: 0; padding: 12px 8px; }
   .cost-empty { text-align: center; font-size: 13px; color: #9FB6A8; padding: 6px 0 2px; }
+  @media (max-width: 340px) { .cost-pay .sub { font-size: 10px; } .cost-pay .amt { font-size: 28px; } .cost-pay { padding-inline: 10px; } }
   @media (max-height: 700px) {
     .main-cost { padding-top: 4px; }
     .cost-wrap { gap: 6px; }
@@ -147,7 +151,7 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '2.4.0';
+  var APP_VERSION = '2.4.1';
   var MAX_UNDO = 20;
 
   // ---------- storage ----------
@@ -238,6 +242,8 @@
   function normalizeName(s) { return cleanName(s).toLowerCase(); }
 
   // ---------- state ----------
+  var COST_PACKS = [1, 3, 5, 6, 12];
+  function packOf(v) { var n = parseInt(v, 10); return COST_PACKS.indexOf(n) >= 0 ? n : 12; }
   var COST_DEFAULTS = { fee: '', hours: '', price: '', pack: 12, qty: '', players: null, round: 1 };
   var S = {
     players: [], courtsCount: 1, noComboRest: true, oddGroupMode: 'bench',
@@ -260,7 +266,7 @@
       S.currentRound = d.currentRound || null;
       S.pastRounds = d.pastRounds || [];
       S.undoStack = d.undoStack || [];
-      if (d.cost) S.cost = Object.assign({}, COST_DEFAULTS, d.cost);
+      if (d.cost) { S.cost = Object.assign({}, COST_DEFAULTS, d.cost); S.cost.pack = packOf(S.cost.pack); }
     }
   })();
 
@@ -727,7 +733,7 @@
   function computeCost() {
     var c = S.cost;
     var fee = costNum(c.fee), hours = costNum(c.hours), price = costNum(c.price), qty = costNum(c.qty);
-    var per = Math.min(24, Math.max(1, parseInt(c.pack, 10) || 12));
+    var per = packOf(c.pack);
     var players = c.players === null ? activeCount() : c.players;
     var perPiece = price / per;
     var courtTotal = fee * hours, shutTotal = perPiece * qty, grand = courtTotal + shutTotal;
@@ -799,7 +805,7 @@
       if (value === '') S.cost.players = null;
       else { var v = parseInt(value, 10); S.cost.players = isFinite(v) && v >= 0 ? v : 0; }
     } else if (field === 'pack') {
-      S.cost.pack = parseInt(value, 10) || 12;
+      S.cost.pack = packOf(value);
     } else {
       S.cost[field] = value;
     }
@@ -966,9 +972,9 @@
   function renderCostTab() {
     var c = S.cost;
     var packOpts = '';
-    for (var i = 1; i <= 24; i++) {
-      packOpts += '<option value="' + i + '"' + (Number(c.pack) === i ? ' selected' : '') + '>' + (i === 1 ? '1 (per piece)' : i) + '</option>';
-    }
+    COST_PACKS.forEach(function (n) {
+      packOpts += '<option value="' + n + '"' + (packOf(c.pack) === n ? ' selected' : '') + '>' + (n === 1 ? '1 (per piece)' : n) + '</option>';
+    });
     var players = c.players === null ? activeCount() : c.players;
     return '<div class="cost-wrap">' +
       '<div class="panel">' +
