@@ -151,7 +151,7 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '2.4.4';
+  var APP_VERSION = '2.4.5';
   var MAX_UNDO = 20;
 
   // ---------- storage ----------
@@ -455,6 +455,14 @@
     var sorted = active.slice().sort(function (a, b) {
       var ar = soloRank(a), br = soloRank(b);
       if (ar !== br) return ar - br;
+      // Nobody rests this round, so rest history is irrelevant: the back of the list is the solo slot,
+      // and it must go purely by who has played the fewest solos (otherwise whoever played the early
+      // rounds on 1 court would be stuck with every solo).
+      if (restCount === 0 && soloCourtCount > 0) {
+        var aS = a.singlesPlayed || 0, bS = b.singlesPlayed || 0;
+        if (aS !== bS) return bS - aS;
+        return Math.random() - 0.5;
+      }
       var aStreak = a.streak || 0, bStreak = b.streak || 0;
       if (aStreak !== bStreak) return aStreak - bStreak; // shorter current streak plays first
       // A solo counts as 2 games of effort (singlesPlayed adds 1 on top of the 1 in gamesPlayed).
