@@ -151,7 +151,7 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '2.4.6';
+  var APP_VERSION = '2.4.7';
   var MAX_UNDO = 20;
 
   // ---------- storage ----------
@@ -447,10 +447,15 @@
     function soloRecency(p) {
       if (!p.lastSingleRound) return 0;
       var gap = S.roundNumber - p.lastSingleRound;
-      if (gap <= 0) return 250;           // strong soft penalty: solo again right after a solo
+      if (gap <= 0) return 500;           // strong soft penalty: solo again right after a solo
       if (gap === 1) return 40;
       return -Math.min(gap, 20) * 0.5;    // otherwise the longest wait goes first
     }
+
+    // Solo "debt" relative to the least-soloed active player, capped at 2 so a late joiner (0 solos)
+    // catches up gradually instead of being thrown into back-to-back solos.
+    var minSolo = Math.min.apply(null, active.map(function (p) { return p.singlesPlayed || 0; }));
+    function soloLoad(p) { return Math.min((p.singlesPlayed || 0) - minSolo, 2); }
 
     var sorted = active.slice().sort(function (a, b) {
       var ar = soloRank(a), br = soloRank(b);
@@ -485,7 +490,7 @@
       var bestPair = null, bestScore = Infinity;
       for (var i = 0; i < sorted.length; i++) {
         for (var j = i + 1; j < sorted.length; j++) {
-          var sc = ((sorted[i].singlesPlayed || 0) + (sorted[j].singlesPlayed || 0)) * 100
+          var sc = (soloLoad(sorted[i]) + soloLoad(sorted[j])) * 100
             + soloRecency(sorted[i]) + soloRecency(sorted[j])
             + (sp[pairKey(sorted[i].id, sorted[j].id)] || 0) * 110 + Math.random();
           if (sc < bestScore) { bestScore = sc; bestPair = [sorted[i].id, sorted[j].id]; }
@@ -507,7 +512,7 @@
       if (S.oddGroupMode === 'uneven') {
         var soloIdx = 0, soloBest = Infinity;
         bonusCandidates.forEach(function (c, ci) {
-          var sc3 = (c.singlesPlayed || 0) * 100 + soloRecency(c) + Math.random();
+          var sc3 = soloLoad(c) * 100 + soloRecency(c) + Math.random();
           if (sc3 < soloBest) { soloBest = sc3; soloIdx = ci; }
         });
         var solo = bonusCandidates[soloIdx];
@@ -522,7 +527,7 @@
         bonusCandidates.forEach(function (x, xi) {
           if (x.gamesRested !== bonusCandidates[2].gamesRested) return;
           var pr = bonusCandidates.filter(function (_, i) { return i !== xi; });
-          var sc4 = ((pr[0].singlesPlayed || 0) + (pr[1].singlesPlayed || 0)) * 100
+          var sc4 = (soloLoad(pr[0]) + soloLoad(pr[1])) * 100
             + soloRecency(pr[0]) + soloRecency(pr[1])
             + (sp3[pairKey(pr[0].id, pr[1].id)] || 0) * 110 + Math.random();
           if (sc4 < restBest) { restBest = sc4; restIdx = xi; }
