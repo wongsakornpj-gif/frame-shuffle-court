@@ -151,7 +151,7 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '2.4.2';
+  var APP_VERSION = '2.4.3';
   var MAX_UNDO = 20;
 
   // ---------- storage ----------
@@ -479,7 +479,7 @@
         for (var j = i + 1; j < sorted.length; j++) {
           var sc = ((sorted[i].singlesPlayed || 0) + (sorted[j].singlesPlayed || 0)) * 100
             + soloRecency(sorted[i]) + soloRecency(sorted[j])
-            + (sp[pairKey(sorted[i].id, sorted[j].id)] || 0) * 10 + Math.random();
+            + (sp[pairKey(sorted[i].id, sorted[j].id)] || 0) * 60 + Math.random();
           if (sc < bestScore) { bestScore = sc; bestPair = [sorted[i].id, sorted[j].id]; }
         }
       }
