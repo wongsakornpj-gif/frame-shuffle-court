@@ -151,7 +151,7 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '2.4.1';
+  var APP_VERSION = '2.4.7';
   var MAX_UNDO = 20;
 
   // ---------- storage ----------
@@ -356,6 +356,7 @@
       gamesRested: keep.gamesRested + remove.gamesRested,
       singlesPlayed: (keep.singlesPlayed || 0) + (remove.singlesPlayed || 0),
       streak: Math.max(keep.streak || 0, remove.streak || 0),
+      lastSingleRound: Math.max(keep.lastSingleRound || 0, remove.lastSingleRound || 0),
       lastPlayedRound: Math.max(keep.lastPlayedRound, remove.lastPlayedRound),
       active: keep.active || remove.active
     });
@@ -421,10 +422,56 @@
 
     var prevSnapshot = JSON.parse(JSON.stringify({ players: S.players, history: S.history, roundNumber: S.roundNumber, currentRound: S.currentRound }));
 
+    var slots = S.courtsCount * 4;
+    var capped = Math.min(active.length, slots);
+    var fullGroups = Math.floor(capped / 4);
+    var mainCount = fullGroups * 4;
+    var leftoverCount = capped - mainCount;
+    var bonusCourtAvailable = fullGroups < S.courtsCount;
+
+    // How many people sit out this round (needed up-front for the after-solo rule).
+    var soloCourtCount = 0;
+    if (leftoverCount >= 2 && bonusCourtAvailable) soloCourtCount = (leftoverCount === 3 && S.oddGroupMode === 'uneven') ? 3 : 2;
+    var restCount = active.length - mainCount - soloCourtCount;
+
+    // After-solo rule: a solo (1-person side) is ~2 games of effort, so whoever played one last round
+    // gets a break. If 2+ people sit out, BOTH solo players rest together (so a lone leftover solo
+    // player can't be forced into another solo). Otherwise nobody rests and they go into doubles.
+    var justSolo = {};
+    var prevSoloAll = S.roundNumber > 0 ? S.players.filter(function (p) { return p.lastSingleRound === S.roundNumber; }) : [];
+    var prevSoloActive = prevSoloAll.filter(function (p) { return p.active; });
+    prevSoloActive.forEach(function (p) { justSolo[p.id] = true; });
+    var restTogether = prevSoloAll.length === 2 && prevSoloActive.length === 2 && restCount >= 2;
+    function soloRank(p) { return justSolo[p.id] ? (restTogether ? 1 : -1) : 0; } // -1 plays first, +1 rests first
+    // Gap since last solo: 0 = last round, 1 = two rounds ago, ...
+    function soloRecency(p) {
+      if (!p.lastSingleRound) return 0;
+      var gap = S.roundNumber - p.lastSingleRound;
+      if (gap <= 0) return 500;           // strong soft penalty: solo again right after a solo
+      if (gap === 1) return 40;
+      return -Math.min(gap, 20) * 0.5;    // otherwise the longest wait goes first
+    }
+
+    // Solo "debt" relative to the least-soloed active player, capped at 2 so a late joiner (0 solos)
+    // catches up gradually instead of being thrown into back-to-back solos.
+    var minSolo = Math.min.apply(null, active.map(function (p) { return p.singlesPlayed || 0; }));
+    function soloLoad(p) { return Math.min((p.singlesPlayed || 0) - minSolo, 2); }
+
     var sorted = active.slice().sort(function (a, b) {
+      var ar = soloRank(a), br = soloRank(b);
+      if (ar !== br) return ar - br;
+      // Nobody rests this round, so rest history is irrelevant: the back of the list is the solo slot,
+      // and it must go purely by who has played the fewest solos (otherwise whoever played the early
+      // rounds on 1 court would be stuck with every solo).
+      if (restCount === 0 && soloCourtCount > 0) {
+        var aS = a.singlesPlayed || 0, bS = b.singlesPlayed || 0;
+        if (aS !== bS) return bS - aS;
+        return Math.random() - 0.5;
+      }
       var aStreak = a.streak || 0, bStreak = b.streak || 0;
       if (aStreak !== bStreak) return aStreak - bStreak; // shorter current streak plays first
-      var aElig = a.gamesPlayed + a.gamesRested, bElig = b.gamesPlayed + b.gamesRested;
+      // A solo counts as 2 games of effort (singlesPlayed adds 1 on top of the 1 in gamesPlayed).
+      var aElig = a.gamesPlayed + (a.singlesPlayed || 0) + a.gamesRested, bElig = b.gamesPlayed + (b.singlesPlayed || 0) + b.gamesRested;
       var aRate = aElig <= 0 ? Infinity : a.gamesRested / aElig;
       var bRate = bElig <= 0 ? Infinity : b.gamesRested / bElig;
       if (aRate !== bRate) return bRate - aRate;
@@ -436,13 +483,6 @@
       return Math.random() - 0.5;
     });
 
-    var slots = S.courtsCount * 4;
-    var capped = Math.min(active.length, slots);
-    var fullGroups = Math.floor(capped / 4);
-    var mainCount = fullGroups * 4;
-    var leftoverCount = capped - mainCount;
-    var bonusCourtAvailable = fullGroups < S.courtsCount;
-
     // Nobody rests this round, so who gets the 1v1 is purely a fairness choice:
     // pick the pair with the fewest singles played, avoiding a rematch if possible.
     if (leftoverCount === 2 && bonusCourtAvailable && active.length <= slots) {
@@ -450,8 +490,9 @@
       var bestPair = null, bestScore = Infinity;
       for (var i = 0; i < sorted.length; i++) {
         for (var j = i + 1; j < sorted.length; j++) {
-          var sc = ((sorted[i].singlesPlayed || 0) + (sorted[j].singlesPlayed || 0)) * 100
-            + (sp[pairKey(sorted[i].id, sorted[j].id)] || 0) * 10 + Math.random();
+          var sc = (soloLoad(sorted[i]) + soloLoad(sorted[j])) * 100
+            + soloRecency(sorted[i]) + soloRecency(sorted[j])
+            + (sp[pairKey(sorted[i].id, sorted[j].id)] || 0) * 110 + Math.random();
           if (sc < bestScore) { bestScore = sc; bestPair = [sorted[i].id, sorted[j].id]; }
         }
       }
@@ -469,13 +510,29 @@
       bonusPlayingIds = bonusCandidates.map(function (p) { return p.id; });
     } else if (bonusCandidates.length === 3) {
       if (S.oddGroupMode === 'uneven') {
-        var soloIdx = Math.floor(Math.random() * 3);
+        var soloIdx = 0, soloBest = Infinity;
+        bonusCandidates.forEach(function (c, ci) {
+          var sc3 = soloLoad(c) * 100 + soloRecency(c) + Math.random();
+          if (sc3 < soloBest) { soloBest = sc3; soloIdx = ci; }
+        });
         var solo = bonusCandidates[soloIdx];
         var pair = bonusCandidates.filter(function (_, i) { return i !== soloIdx; });
         bonusMatch = { type: 'uneven', teamA: [solo.id], teamB: pair.map(function (p) { return p.id; }) };
         bonusPlayingIds = bonusCandidates.map(function (p) { return p.id; });
       } else {
-        var playingTwo = bonusCandidates.slice(0, 2);
+        // 1v1 + one rests: whoever rests is a fairness call (fewest rests so far), but among players
+        // tied on rests, pick the resting one so the remaining solo pair is the freshest matchup.
+        var sp3 = S.history.singlesPairs || {};
+        var restIdx = 2, restBest = Infinity;
+        bonusCandidates.forEach(function (x, xi) {
+          if (x.gamesRested !== bonusCandidates[2].gamesRested) return;
+          var pr = bonusCandidates.filter(function (_, i) { return i !== xi; });
+          var sc4 = (soloLoad(pr[0]) + soloLoad(pr[1])) * 100
+            + soloRecency(pr[0]) + soloRecency(pr[1])
+            + (sp3[pairKey(pr[0].id, pr[1].id)] || 0) * 110 + Math.random();
+          if (sc4 < restBest) { restBest = sc4; restIdx = xi; }
+        });
+        var playingTwo = bonusCandidates.filter(function (_, i) { return i !== restIdx; });
         bonusMatch = { type: 'singles', teamA: [playingTwo[0].id], teamB: [playingTwo[1].id] };
         bonusPlayingIds = playingTwo.map(function (p) { return p.id; });
       }
@@ -493,10 +550,10 @@
       var key = resting.map(function (p) { return p.id; }).sort().join(',');
       var attempts = 0;
       while (S.history.restCombos.indexOf(key) !== -1 && attempts < 20) {
-        var rIdx = resting.findIndex(function (r) { return playing.some(function (p) { return p.gamesPlayed === r.gamesPlayed; }); });
+        var rIdx = resting.findIndex(function (r) { return !justSolo[r.id] && playing.some(function (p) { return !justSolo[p.id] && p.gamesPlayed === r.gamesPlayed; }); });
         if (rIdx === -1) break;
         var r = resting[rIdx];
-        var pIdx = playing.findIndex(function (p) { return p.gamesPlayed === r.gamesPlayed; });
+        var pIdx = playing.findIndex(function (p) { return !justSolo[p.id] && p.gamesPlayed === r.gamesPlayed; });
         var p = playing[pIdx];
         playing[pIdx] = r; resting[rIdx] = p;
         key = resting.map(function (x) { return x.id; }).sort().join(',');
@@ -552,14 +609,15 @@
     var newRoundNumber = S.roundNumber + 1;
     var playingIds = new Set(playing.map(function (p) { return p.id; }).concat(bonusPlayingIds));
     var restingIds = new Set(resting.map(function (p) { return p.id; }));
-    var singlesIds = new Set(bonusPlayingIds);
+    var singlesIds = new Set(); // only the lone side of a 1v1 / 1v2 counts as "solo"
+    if (bonusMatch) [bonusMatch.teamA, bonusMatch.teamB].forEach(function (t) { if (t.length === 1) singlesIds.add(t[0]); });
     var newSinglesPairs = Object.assign({}, S.history.singlesPairs || {});
     if (bonusMatch && bonusMatch.type === 'singles') {
       var spk = pairKey(bonusMatch.teamA[0], bonusMatch.teamB[0]);
       newSinglesPairs[spk] = (newSinglesPairs[spk] || 0) + 1;
     }
     S.players = S.players.map(function (p) {
-      if (playingIds.has(p.id)) return Object.assign({}, p, { gamesPlayed: p.gamesPlayed + 1, singlesPlayed: (p.singlesPlayed || 0) + (singlesIds.has(p.id) ? 1 : 0), lastPlayedRound: newRoundNumber, streak: (p.streak || 0) + 1 });
+      if (playingIds.has(p.id)) return Object.assign({}, p, { gamesPlayed: p.gamesPlayed + 1, singlesPlayed: (p.singlesPlayed || 0) + (singlesIds.has(p.id) ? 1 : 0), lastSingleRound: singlesIds.has(p.id) ? newRoundNumber : (p.lastSingleRound || 0), lastPlayedRound: newRoundNumber, streak: (p.streak || 0) + 1 });
       if (restingIds.has(p.id)) return Object.assign({}, p, { gamesRested: p.gamesRested + 1, streak: 0 });
       return p;
     });
@@ -603,7 +661,7 @@
   function newSession() {
     if (!S.confirmingNewSession) { S.confirmingNewSession = true; render(); return; }
     S.players = S.players.map(function (p) {
-      return Object.assign({}, p, { gamesPlayed: 0, gamesRested: 0, singlesPlayed: 0, streak: 0, lastPlayedRound: 0, joinRound: 0 });
+      return Object.assign({}, p, { gamesPlayed: 0, gamesRested: 0, singlesPlayed: 0, lastSingleRound: 0, streak: 0, lastPlayedRound: 0, joinRound: 0 });
     });
     S.history = { partnerCounts: {}, opponentCounts: {}, restCombos: [] };
     S.roundNumber = 0; S.currentRound = null; S.pastRounds = []; S.undoStack = []; S.confirmingNewSession = false;
@@ -679,7 +737,7 @@
       lines.push('Ct ' + (i + 1) + ': ' + c[0].map(nameOfPlain).join(' & ') + ' VS ' + c[1].map(nameOfPlain).join(' & '));
     });
     if (round.bonusMatch) {
-      lines.push('Bonus: ' + round.bonusMatch.teamA.map(nameOfPlain).join(' & ') + ' VS ' + round.bonusMatch.teamB.map(nameOfPlain).join(' & '));
+      lines.push('Solo: ' + round.bonusMatch.teamA.map(nameOfPlain).join(' & ') + ' VS ' + round.bonusMatch.teamB.map(nameOfPlain).join(' & '));
     }
     if (round.resting.length > 0) lines.push('😴 Rest: ' + round.resting.map(nameOfPlain).join(', '));
     return lines.join('\n');
@@ -883,7 +941,7 @@
     var label = bonus.type === 'uneven' ? '1 vs 2' : '1 vs 1';
     return '' +
       '<div class="card card-bonus">' +
-        '<div class="court-label">Bonus court · ' + label + '</div>' +
+        '<div class="court-label">Solo court · ' + label + '</div>' +
         '<div class="court-line">' + bonus.teamA.map(nameOf).join(' &amp; ') + pairTagInline(bonus.teamA.length, pc[0]) +
           ' <span class="vs">VS</span> ' +
           bonus.teamB.map(nameOf).join(' &amp; ') + pairTagInline(bonus.teamB.length, pc[1]) +
@@ -1015,6 +1073,14 @@
   function renderRosterTab() {
     var html = '';
 
+    html += '<div class="panel">' +
+      '<div class="panel-title">Start a new session</div>' +
+      '<div class="panel-desc">Keeps everyone\'s name on the roster, resets play/rest counts and pairing history to zero — for whoever\'s running it today.</div>' +
+      '<button class="btn-session' + (S.confirmingNewSession ? ' confirming' : '') + '" onclick="SC.newSession()">' +
+        (S.confirmingNewSession ? 'Tap again to confirm new session' : 'New session') +
+      '</button>' +
+    '</div>';
+
     if (S.players.length === 0) {
       html += '<p class="empty-note">No players yet — add some from the Play tab.</p>';
     }
@@ -1035,19 +1101,11 @@
 
     S.players.forEach(function (p) {
       html += '<div class="roster-row' + (p.active ? '' : ' inactive') + '">' +
-        '<div class="roster-name">' + escapeHtml(p.name) + '<div class="roster-stats">Played ' + p.gamesPlayed + ' · Rested ' + p.gamesRested + '</div></div>' +
+        '<div class="roster-name">' + escapeHtml(p.name) + '<div class="roster-stats">Played ' + p.gamesPlayed + ' · Rested ' + p.gamesRested + ((p.singlesPlayed || 0) > 0 ? ' · Solo ' + p.singlesPlayed : '') + '</div></div>' +
         '<button class="roster-btn" style="color:' + (p.active ? '#9FB6A8' : '#FFC93C') + '" onclick="SC.toggleActive(\'' + p.id + '\')">' + icon(p.active ? 'check' : 'x', 18) + '</button>' +
         '<button class="roster-btn" style="color:#E4572E" onclick="SC.removePlayer(\'' + p.id + '\')">' + icon('trash', 18) + '</button>' +
       '</div>';
     });
-
-    html += '<div class="panel" style="margin-top:20px">' +
-      '<div class="panel-title">Start a new session</div>' +
-      '<div class="panel-desc">Keeps everyone\'s name on the roster, resets play/rest counts and pairing history to zero — for whoever\'s running it today.</div>' +
-      '<button class="btn-session' + (S.confirmingNewSession ? ' confirming' : '') + '" onclick="SC.newSession()">' +
-        (S.confirmingNewSession ? 'Tap again to confirm new session' : 'New session') +
-      '</button>' +
-    '</div>';
 
     html += '<div class="panel">' +
       '<div class="panel-title">Hand off to another device</div>' +
