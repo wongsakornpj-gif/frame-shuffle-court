@@ -151,7 +151,7 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '2.4.5';
+  var APP_VERSION = '2.4.6';
   var MAX_UNDO = 20;
 
   // ---------- storage ----------
@@ -515,7 +515,19 @@
         bonusMatch = { type: 'uneven', teamA: [solo.id], teamB: pair.map(function (p) { return p.id; }) };
         bonusPlayingIds = bonusCandidates.map(function (p) { return p.id; });
       } else {
-        var playingTwo = bonusCandidates.slice(0, 2);
+        // 1v1 + one rests: whoever rests is a fairness call (fewest rests so far), but among players
+        // tied on rests, pick the resting one so the remaining solo pair is the freshest matchup.
+        var sp3 = S.history.singlesPairs || {};
+        var restIdx = 2, restBest = Infinity;
+        bonusCandidates.forEach(function (x, xi) {
+          if (x.gamesRested !== bonusCandidates[2].gamesRested) return;
+          var pr = bonusCandidates.filter(function (_, i) { return i !== xi; });
+          var sc4 = ((pr[0].singlesPlayed || 0) + (pr[1].singlesPlayed || 0)) * 100
+            + soloRecency(pr[0]) + soloRecency(pr[1])
+            + (sp3[pairKey(pr[0].id, pr[1].id)] || 0) * 110 + Math.random();
+          if (sc4 < restBest) { restBest = sc4; restIdx = xi; }
+        });
+        var playingTwo = bonusCandidates.filter(function (_, i) { return i !== restIdx; });
         bonusMatch = { type: 'singles', teamA: [playingTwo[0].id], teamB: [playingTwo[1].id] };
         bonusPlayingIds = playingTwo.map(function (p) { return p.id; });
       }
