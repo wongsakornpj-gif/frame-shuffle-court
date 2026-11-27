@@ -151,7 +151,7 @@
 (function () {
   'use strict';
 
-  var APP_VERSION = '2.4.7';
+  var APP_VERSION = '2.5.0';
   var MAX_UNDO = 20;
 
   // ---------- storage ----------
@@ -377,6 +377,18 @@
     S.history.partnerCounts = remapCounts(S.history.partnerCounts);
     S.history.opponentCounts = remapCounts(S.history.opponentCounts);
     if (S.history.singlesPairs) S.history.singlesPairs = remapCounts(S.history.singlesPairs);
+    if (S.history.unevenMatches) {
+      var remappedUneven = {};
+      Object.keys(S.history.unevenMatches).forEach(function (k) {
+        var parts = k.split('>');
+        var lone = parts[0] === removeId ? keepId : parts[0];
+        var pairIds = Array.from(new Set(parts[1].split('|').map(function (id) { return id === removeId ? keepId : id; }))).sort();
+        if (pairIds.length !== 2 || pairIds.indexOf(lone) !== -1) return;
+        var nk = lone + '>' + pairIds.join('|');
+        remappedUneven[nk] = (remappedUneven[nk] || 0) + S.history.unevenMatches[k];
+      });
+      S.history.unevenMatches = remappedUneven;
+    }
     S.history.restCombos = Array.from(new Set(S.history.restCombos.map(function (comboKey) {
       var ids = comboKey.split(',').map(function (id) { return id === removeId ? keepId : id; });
       return Array.from(new Set(ids)).sort().join(',');
@@ -612,9 +624,16 @@
     var singlesIds = new Set(); // only the lone side of a 1v1 / 1v2 counts as "solo"
     if (bonusMatch) [bonusMatch.teamA, bonusMatch.teamB].forEach(function (t) { if (t.length === 1) singlesIds.add(t[0]); });
     var newSinglesPairs = Object.assign({}, S.history.singlesPairs || {});
+    var newUnevenMatches = Object.assign({}, S.history.unevenMatches || {});
+    var soloPriorCount = null; // how many times this exact solo-court matchup has happened before
     if (bonusMatch && bonusMatch.type === 'singles') {
       var spk = pairKey(bonusMatch.teamA[0], bonusMatch.teamB[0]);
-      newSinglesPairs[spk] = (newSinglesPairs[spk] || 0) + 1;
+      soloPriorCount = newSinglesPairs[spk] || 0;
+      newSinglesPairs[spk] = soloPriorCount + 1;
+    } else if (bonusMatch) {
+      var umk = bonusMatch.teamA[0] + '>' + bonusMatch.teamB.slice().sort().join('|');
+      soloPriorCount = newUnevenMatches[umk] || 0;
+      newUnevenMatches[umk] = soloPriorCount + 1;
     }
     S.players = S.players.map(function (p) {
       if (playingIds.has(p.id)) return Object.assign({}, p, { gamesPlayed: p.gamesPlayed + 1, singlesPlayed: (p.singlesPlayed || 0) + (singlesIds.has(p.id) ? 1 : 0), lastSingleRound: singlesIds.has(p.id) ? newRoundNumber : (p.lastSingleRound || 0), lastPlayedRound: newRoundNumber, streak: (p.streak || 0) + 1 });
@@ -628,10 +647,11 @@
       courtPriorCounts: courtPriorCounts,
       bonusMatch: bonusMatch,
       bonusPriorCounts: bonusPriorCounts,
+      soloPriorCount: soloPriorCount,
       resting: resting.map(function (p) { return p.id; })
     };
 
-    S.history = { partnerCounts: newPartnerCounts, opponentCounts: newOpponentCounts, restCombos: newRestCombos, singlesPairs: newSinglesPairs };
+    S.history = { partnerCounts: newPartnerCounts, opponentCounts: newOpponentCounts, restCombos: newRestCombos, singlesPairs: newSinglesPairs, unevenMatches: newUnevenMatches };
     S.roundNumber = newRoundNumber;
     S.currentRound = roundData;
     S.pastRounds = S.pastRounds.concat([roundData]);
@@ -935,13 +955,19 @@
       '</div>';
   }
 
-  function bonusCardHtml(bonus, priorCounts) {
+  function soloTagInline(priorCount) {
+    if (priorCount === null || priorCount === undefined) return '';
+    if (priorCount === 0) return ' <span class="new-badge" title="First time this solo matchup">🆕</span>';
+    return ' <span class="repeat-badge">×' + (priorCount + 1) + '</span>';
+  }
+
+  function bonusCardHtml(bonus, priorCounts, soloPrior) {
     if (!bonus) return '';
     var pc = priorCounts || [null, null];
     var label = bonus.type === 'uneven' ? '1 vs 2' : '1 vs 1';
     return '' +
       '<div class="card card-bonus">' +
-        '<div class="court-label">Solo court · ' + label + '</div>' +
+        '<div class="court-label">Solo court · ' + label + soloTagInline(soloPrior) + '</div>' +
         '<div class="court-line">' + bonus.teamA.map(nameOf).join(' &amp; ') + pairTagInline(bonus.teamA.length, pc[0]) +
           ' <span class="vs">VS</span> ' +
           bonus.teamB.map(nameOf).join(' &amp; ') + pairTagInline(bonus.teamB.length, pc[1]) +
@@ -958,7 +984,7 @@
     var html = '<div class="setup-label" style="margin-bottom:6px">Round ' + round.roundNumber + '</div>';
     html += restingLineHtml(round);
     round.courts.forEach(function (court, i) { html += courtCardHtml(court[0], court[1], i, round.courtPriorCounts && round.courtPriorCounts[i]); });
-    html += bonusCardHtml(round.bonusMatch, round.bonusPriorCounts);
+    html += bonusCardHtml(round.bonusMatch, round.bonusPriorCounts, round.soloPriorCount);
     return html;
   }
 
